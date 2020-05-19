@@ -1,11 +1,12 @@
-﻿<Window x:Class="ProjApp.StartupWindow"
+﻿<Window x:Class="ProjApp.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProjApp"
         mc:Ignorable="d"
-        Title="测量螺丝刀之高斯投影" Height="700" Width="1024">
+        DataContext="{Binding Source={StaticResource Locator}, Path=Proj}"
+        Title="测量螺丝刀之高斯投影" Height="720" Width="1024">
     <Window.Resources>
         <Style TargetType="Label">
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -22,32 +23,32 @@
     <DockPanel LastChildFill="true" >
         <Menu  DockPanel.Dock="Top">
             <MenuItem Header="文件">
-                <MenuItem Header="打开..." Click="OnReadDataFile"/>
-                <MenuItem Header="保存..." Click="OnWriteDataFile"/>
+                <MenuItem Header="打开..." Command="{Binding ReadDataFileCommand}"/>
+                <MenuItem Header="保存..." Command="{Binding SaveDataFileCommand}"/>
                 <Separator/>
                 <MenuItem Header="退出"/>
             </MenuItem>
 
             <MenuItem Header="编辑">
-                <MenuItem Header="清除B，L" Click="OnClearBL"/>
-                <MenuItem Header="清除X，Y" Click="OnClearXY"/>
+                <MenuItem Header="清除B，L" Command="{Binding ClearBLCommand}"/>
+                <MenuItem Header="清除X，Y" Command="{Binding ClearXYCommand}"/>
             </MenuItem>
             
             <MenuItem Header="高斯投影">
-                <MenuItem Header="正算" Click="OnBLtoXYProj"/>
-                <MenuItem Header="反算" Click="OnXYtoBLProj"/>
+                <MenuItem Header="正算" Command="{Binding OnBLtoXYCommand}"/>
+                <MenuItem Header="反算" Command="{Binding OnXYtoBLCommand}"/>
             </MenuItem>
 
             <MenuItem Header="测量工具">
-                <MenuItem Header="坐标方位角计算" Click="OnAzimuth_Click"/>
+                <MenuItem Header="坐标方位角计算" Command="{Binding ShowAzimuthWindowCommand}"/>
             </MenuItem>
 
             <MenuItem Header="帮助">
                 <MenuItem Header="关于..."/>
             </MenuItem>
         </Menu>
-        
-        <Grid>
+
+        <Grid DockPanel.Dock="Left">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="60"/>
@@ -63,13 +64,13 @@
                         <ColumnDefinition Width="110*"/>
                     </Grid.ColumnDefinitions>
                     <ComboBox Grid.Column="0" x:Name="comboBox_Spheroid" 
-                          ItemsSource="{Binding SpheroidList}"
-                          SelectedItem="{Binding CurrentSpheroid}"
+                          ItemsSource="{Binding GaussProj.SpheroidList}"
+                          SelectedItem="{Binding GaussProj.CurrentSpheroid}"
                           SelectedIndex="0"/>
                     <Label Content="长半轴：a=" Grid.Column="1" HorizontalAlignment="Right"/>
-                    <TextBox x:Name="textBox_a" Grid.Column="2" Text="{Binding CurrentSpheroid.a}" />
+                    <TextBox x:Name="textBox_a" Grid.Column="2" Text="{Binding GaussProj.CurrentSpheroid.a}" />
                     <Label Content="扁率：1/" Grid.Column="3"  HorizontalAlignment="Right"/>
-                    <TextBox x:Name="textBox_f" Grid.Column="4" Text="{Binding CurrentSpheroid.f}"/>
+                    <TextBox x:Name="textBox_f" Grid.Column="4" Text="{Binding GaussProj.CurrentSpheroid.f}"/>
                 </Grid>
             </GroupBox>
 
@@ -85,12 +86,12 @@
                         <ColumnDefinition Width="110*"/>
                     </Grid.ColumnDefinitions>
                     <Label Content="中央子午线经度L0=" />
-                    <TextBox x:Name="textBox_L0" Text="{Binding dmsL0}" Grid.Column="1"/>
+                    <TextBox x:Name="textBox_L0" Text="{Binding GaussProj.dmsL0}" Grid.Column="1"/>
                     <Label Content="Y坐标加常数：" Grid.Column="2" />
-                    <TextBox x:Name="textBox_YKM" Text="{Binding YKM}" Grid.Column="3"/>
+                    <TextBox x:Name="textBox_YKM" Text="{Binding GaussProj.YKM}" Grid.Column="3"/>
                     <Label Content="km" Grid.Column="4"/>
                     <Label Content="带号：" Grid.Column="5"/>
-                    <TextBox Text="{Binding N}"  Grid.Column="6"/>
+                    <TextBox Text="{Binding GaussProj.N}"  Grid.Column="6"/>
                 </Grid>
             </GroupBox>
 
@@ -98,7 +99,7 @@
                 <Grid>
                     <DataGrid x:Name="dataGrid_ctrPnt" 
                     AutoGenerateColumns="False" Margin="2" 
-                    ItemsSource="{Binding SPointList}" >
+                    ItemsSource="{Binding GaussProj.SPointList}" >
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="点名" 
                         Binding="{Binding Name}"
@@ -119,12 +120,17 @@
                         Binding="{Binding GammaDMSString}"
                         MinWidth="100" />
                             <DataGridTextColumn Header="m" 
-                        Binding="{Binding m, StringFormat={}{0:##0.######}}"
+                        Binding="{Binding m}"
                         MinWidth="100" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
             </Border>
+        </Grid>
+        <Grid>
+            <Border>
+                <Canvas Background="AliceBlue"/>
+            </Border>            
         </Grid>
     </DockPanel>
 

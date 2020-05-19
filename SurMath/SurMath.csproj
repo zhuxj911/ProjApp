@@ -43,9 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GaussProj.cs" />
-    <Compile Include="GPoint.cs" />
     <Compile Include="IProj.cs" />
-    <Compile Include="NotificationObject.cs" />
     <Compile Include="Spheroid.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpheroidFactory.cs" />

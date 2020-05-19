@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,8 +7,44 @@ using System.Threading.Tasks;
 
 namespace ProjApp
 {
-    public class SPoint : ZXY.GPoint
+    public class SPoint : ObservableObject
     {
+        private string name;
+
+        public string Name
+        {
+            get => name;
+            set
+            {
+                name = value;
+                RaisePropertyChanged(() => Name);
+            }
+        }
+
+        private double x;
+
+        public double X
+        {
+            get => x;
+            set
+            {
+                x = value;
+                RaisePropertyChanged(() => X);
+            }
+        }
+
+        private double y;
+
+        public double Y
+        {
+            get => y;
+            set
+            {
+                y = value;
+                RaisePropertyChanged(() => X);
+            }
+        }
+
         private double _dmsB;
         /// <summary>
         /// 纬度，单位为度分秒
@@ -18,8 +55,7 @@ namespace ProjApp
             set
             {
                 _dmsB = value;
-                RaisePropertyChanged("dmsB");
-                RaisePropertyChanged("B");
+                RaisePropertyChanged(() => dmsB);
             }
         }
 
@@ -47,8 +83,7 @@ namespace ProjApp
             set
             {
                 _dmsL = value;
-                RaisePropertyChanged("dmsL");
-                RaisePropertyChanged("L");
+                RaisePropertyChanged(() => dmsL);
             }
         }
 
@@ -60,7 +95,7 @@ namespace ProjApp
             get => ZXY.SurMath.DMStoRAD(dmsL);
             set
             {
-                dmsL = ZXY.SurMath.RADtoDMS(value); 
+                dmsL = ZXY.SurMath.RADtoDMS(value);
             }
         }
 
@@ -71,8 +106,7 @@ namespace ProjApp
             set
             {
                 _Gamma = value;
-                RaisePropertyChanged("Gamma");
-                RaisePropertyChanged("GammaDMSString");
+                RaisePropertyChanged(() => Gamma);
             }
         }
 
@@ -89,7 +123,7 @@ namespace ProjApp
             set
             {
                 _m = value;
-                RaisePropertyChanged("m");
+                RaisePropertyChanged(() => m);
             }
         }
 

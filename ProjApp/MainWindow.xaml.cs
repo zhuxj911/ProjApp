@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
+using ProjApp.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,24 +12,18 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace ProjApp
 {
     /// <summary>
-    /// MainWindow.xaml 的交互逻辑
+    /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class AzimuthWin : Window
+    public partial class MainWindow : Window
     {
-        public AzimuthWin()
+        public MainWindow()
         {
             InitializeComponent();
-        }
-
-        private void BtnClose_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
         }
     }
 }

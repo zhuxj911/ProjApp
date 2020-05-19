@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProjApp"
         mc:Ignorable="d"
+        DataContext="{Binding Source={StaticResource Locator}, Path=Azimuth}"
         Title="坐标方位角计算" Height="180" Width="480" >
     <Window.Resources>
         <Style TargetType="TextBox">
@@ -51,8 +52,7 @@
         <Label Content="距离=" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Right"/>
         <TextBox  x:Name="textBoxDist" Text="{Binding Dist}" Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="3"/>
       
-             <Button x:Name="BtnCal" Content="计算" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Margin="15,3,15,3" Click="BtnCal_Click"/>
+             <Button x:Name="BtnCal" Content="计算" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Margin="15,3,15,3" Command="{Binding CalculateAzimuthCommand}"/>
         <Button x:Name="BtnClose" Content="关闭" Grid.Row="4" Grid.Column="4" Grid.ColumnSpan="2"  Margin="3" Click="BtnClose_Click"/>
-     
     </Grid>
 </Window>

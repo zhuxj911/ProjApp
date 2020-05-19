@@ -9,7 +9,7 @@ namespace ZXY
     /// <summary>
     /// 参考椭球
     /// </summary>
-    public class Spheroid : NotificationObject
+    public class Spheroid
     {
         public string Id { get; set; }
         public string Name { get; set; }
@@ -23,7 +23,6 @@ namespace ZXY
                 {
                     _a = value;
                     InitSpheroid(_a, _f);
-                    RaisePropertyChanged("a");
                 }
             } 
         }
@@ -40,7 +39,6 @@ namespace ZXY
                 {
                     _f = value;
                     InitSpheroid(_a, _f);
-                    RaisePropertyChanged("f");
                 }
             }
         }

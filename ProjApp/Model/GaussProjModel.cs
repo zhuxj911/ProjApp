@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using GalaSoft.MvvmLight;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,10 +9,14 @@ using System.Text;
 using System.Threading.Tasks;
 using ZXY;
 
-namespace ProjApp.ViewModel
+namespace ProjApp.Model
 {
-    public class ProjWinVM : ZXY.NotificationObject
+    public class GaussProjModel : ObservableObject
     {
+        public GaussProjModel()
+        {
+        }
+
         public List<Spheroid> SpheroidList
         {
             get => SpheroidFactory.GetSpheroidList();
@@ -24,7 +29,7 @@ namespace ProjApp.ViewModel
             set
             {
                 currentSpheroid = value;
-                RaisePropertyChanged("CurrentSpheroid");
+                RaisePropertyChanged( () => CurrentSpheroid );
             }
         }
 
@@ -42,8 +47,7 @@ namespace ProjApp.ViewModel
             set
             {
                 _L0 = ZXY.SurMath.DMStoRAD(value);
-                RaisePropertyChanged("dmsL0");
-                RaisePropertyChanged("L0");
+                RaisePropertyChanged(() => dmsL0);
             }
         }
 
@@ -56,8 +60,7 @@ namespace ProjApp.ViewModel
             set
             {
                 _L0 = value;
-                RaisePropertyChanged("dmsL0");
-                RaisePropertyChanged("L0");
+                RaisePropertyChanged(() => L0);
             }
         }
 
@@ -68,7 +71,7 @@ namespace ProjApp.ViewModel
             set
             {
                 _N = value;
-                RaisePropertyChanged("N");
+                RaisePropertyChanged(() => N);
             }
         }
 
@@ -79,7 +82,7 @@ namespace ProjApp.ViewModel
             set
             {
                 _ykm = value;
-                RaisePropertyChanged("YKM");
+                RaisePropertyChanged(() => YKM);
             }
         }
 
@@ -90,7 +93,7 @@ namespace ProjApp.ViewModel
             set
             {
                 _angleFormat = value;
-                RaisePropertyChanged("AngleFormat");
+                RaisePropertyChanged(() => AngleFormat);
             }
         }
         /// <summary>
@@ -109,6 +112,10 @@ namespace ProjApp.ViewModel
             get => SpheroidFactory.GetSpheroids();
         }
 
+        public bool IsValidated()
+        {
+            return sPointList.Count > 0;
+        }
 
         public void BLtoXY()
         {

@@ -1,0 +1,30 @@
+﻿<Window x:Class="ProjApp.StartupWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProjApp"
+        mc:Ignorable="d"
+        Title="测量螺丝刀之高斯投影" Height="700" Width="1024">
+    <DockPanel LastChildFill="False" >
+        <Menu  DockPanel.Dock="Top">
+            <MenuItem Header="文件">
+                <MenuItem Header="退出"/>
+            </MenuItem>
+
+            <MenuItem Header="高斯投影">
+                <MenuItem Header="单点投影" Click="OnSinglePointProj_Click"/>
+                <MenuItem Header="多点投影" Click="OnMultiPointProj_Click"/>
+            </MenuItem>
+
+            <MenuItem Header="测量工具">
+                <MenuItem Header="坐标方位角计算" Click="OnAzimuth_Click"/>
+            </MenuItem>
+
+            <MenuItem Header="帮助">
+                <MenuItem Header="关于..."/>
+            </MenuItem>
+        </Menu>
+    </DockPanel>
+
+</Window>

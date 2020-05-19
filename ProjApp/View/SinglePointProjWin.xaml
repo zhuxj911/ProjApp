@@ -1,0 +1,66 @@
+﻿<Window x:Class="ProjApp.SinglePointProjWin"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProjApp"
+        mc:Ignorable="d"
+        Title="高斯投影正反算" Height="190" Width="520">
+    <Window.Resources>
+        <Style TargetType="Label">
+            <Setter Property="HorizontalContentAlignment" Value="Right" />
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="140*"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="140*"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="140*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="50*"/>
+        </Grid.RowDefinitions>
+        <Label Content="坐标系" Grid.Row="0" Grid.Column="0" />
+        <ComboBox   Grid.Row="0" Grid.Column="1" 
+                    ItemsSource="{Binding SpheroidList}"
+                    SelectedIndex="0"
+                    SelectedItem="{Binding CurrentSpheroid}"/>
+
+        <Label Content="a=" Grid.Row="0" Grid.Column="2" />
+        <TextBox Text="{Binding CurrentSpheroid.a}"  Grid.Row="0" Grid.Column="3" />
+
+        <Label Content="扁率:1/" Grid.Row="0" Grid.Column="4" />
+        <TextBox Text="{Binding CurrentSpheroid.f}"  Grid.Row="0" Grid.Column="5" />
+
+        <Label Content="B=" Grid.Row="1" Grid.Column="0"  />
+        <TextBox Text="{Binding SPnt.dmsB}"  Grid.Row="1" Grid.Column="1" />
+        
+        <Label Content="L=" Grid.Row="2" Grid.Column="0" />
+        <TextBox Text="{Binding SPnt.dmsL}"  Grid.Row="2" Grid.Column="1" />
+
+        <Label Content="L0=" Grid.Row="1" Grid.Column="2" />
+        <TextBox Text="{Binding dmsL0}"  Grid.Row="1" Grid.Column="3" />
+
+        <Label Content="YKM=" Grid.Row="2" Grid.Column="2" />
+        <TextBox Text="{Binding YKM}"  Grid.Row="2" Grid.Column="3" />
+
+        <Label Content="N=" Grid.Row="3" Grid.Column="2" />
+        <TextBox Text="{Binding N}"  Grid.Row="3" Grid.Column="3" />
+
+        <Label Content="X=" Grid.Row="1" Grid.Column="4" />
+        <TextBox Text="{Binding SPnt.X}"  Grid.Row="1" Grid.Column="5" />
+
+        <Label Content="Y=" Grid.Row="2" Grid.Column="4" />
+        <TextBox Text="{Binding SPnt.Y}"  Grid.Row="2" Grid.Column="5" />
+        
+        <Button Content="BL->XY" Click="BLtoXY_Button_Click" Grid.Row="4" Grid.Column="3" Margin="5"/>
+        <Button Content="XY->BL" Click="XYtoBL_Button_Click" Grid.Row="4" Grid.Column="5" Margin="5"/>
+    </Grid>
+</Window>

@@ -59,10 +59,6 @@
     <Compile Include="ViewModel\ProjWinVM.cs" />
     <Compile Include="View\AzimuthWin.xaml.cs" />
     <Compile Include="ViewModel\AzimuthWinVM.cs" />
-    <Compile Include="View\MultiPointProjWin.xaml.cs">
-      <DependentUpon>MultiPointProjWin.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ViewModel\MultiPointProjWinVM.cs" />
     <Compile Include="Model\SPoint.cs" />
     <Compile Include="StartupWindow.xaml.cs">
       <DependentUpon>StartupWindow.xaml</DependentUpon>
@@ -71,29 +67,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\SinglePointProjWin.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="View\SinglePointProjWin.xaml.cs">
-      <DependentUpon>SinglePointProjWin.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="View\MultiPointProjWin.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="StartupWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ViewModel\SinglePointProjWinVM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

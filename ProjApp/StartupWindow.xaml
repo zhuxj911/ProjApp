@@ -6,15 +6,36 @@
         xmlns:local="clr-namespace:ProjApp"
         mc:Ignorable="d"
         Title="测量螺丝刀之高斯投影" Height="700" Width="1024">
-    <DockPanel LastChildFill="False" >
+    <Window.Resources>
+        <Style TargetType="Label">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Margin" Value="5" />
+        </Style>
+    </Window.Resources>
+    
+    <DockPanel LastChildFill="true" >
         <Menu  DockPanel.Dock="Top">
             <MenuItem Header="文件">
+                <MenuItem Header="打开..." Click="OnReadDataFile"/>
+                <MenuItem Header="保存..." Click="OnWriteDataFile"/>
+                <Separator/>
                 <MenuItem Header="退出"/>
             </MenuItem>
 
+            <MenuItem Header="编辑">
+                <MenuItem Header="清除B，L" Click="OnClearBL"/>
+                <MenuItem Header="清除X，Y" Click="OnClearXY"/>
+            </MenuItem>
+            
             <MenuItem Header="高斯投影">
-                <MenuItem Header="单点投影" Click="OnSinglePointProj_Click"/>
-                <MenuItem Header="多点投影" Click="OnMultiPointProj_Click"/>
+                <MenuItem Header="正算" Click="OnBLtoXYProj"/>
+                <MenuItem Header="反算" Click="OnXYtoBLProj"/>
             </MenuItem>
 
             <MenuItem Header="测量工具">
@@ -25,6 +46,86 @@
                 <MenuItem Header="关于..."/>
             </MenuItem>
         </Menu>
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="300*"/>
+            </Grid.RowDefinitions>
+            <GroupBox x:Name="groupBox_spheroid" Header="参考椭球"  BorderBrush="Red" BorderThickness="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200*"/>
+                        <ColumnDefinition Width="70"/>
+                        <ColumnDefinition Width="110*"/>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="110*"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox Grid.Column="0" x:Name="comboBox_Spheroid" 
+                          ItemsSource="{Binding SpheroidList}"
+                          SelectedItem="{Binding CurrentSpheroid}"
+                          SelectedIndex="0"/>
+                    <Label Content="长半轴：a=" Grid.Column="1" HorizontalAlignment="Right"/>
+                    <TextBox x:Name="textBox_a" Grid.Column="2" Text="{Binding CurrentSpheroid.a}" />
+                    <Label Content="扁率：1/" Grid.Column="3"  HorizontalAlignment="Right"/>
+                    <TextBox x:Name="textBox_f" Grid.Column="4" Text="{Binding CurrentSpheroid.f}"/>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox x:Name="groupBox_CoordinateSystem" Header="坐标系定义" Grid.Row="1" Margin="3">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="110"/>
+                        <ColumnDefinition Width="110*"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="110*"/>
+                        <ColumnDefinition Width="30"/>
+                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition Width="110*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="中央子午线经度L0=" />
+                    <TextBox x:Name="textBox_L0" Text="{Binding dmsL0}" Grid.Column="1"/>
+                    <Label Content="Y坐标加常数：" Grid.Column="2" />
+                    <TextBox x:Name="textBox_YKM" Text="{Binding YKM}" Grid.Column="3"/>
+                    <Label Content="km" Grid.Column="4"/>
+                    <Label Content="带号：" Grid.Column="5"/>
+                    <TextBox Text="{Binding N}"  Grid.Column="6"/>
+                </Grid>
+            </GroupBox>
+
+            <Border  Grid.Row="2" BorderBrush="Red" BorderThickness="2" Margin="3">
+                <Grid>
+                    <DataGrid x:Name="dataGrid_ctrPnt" 
+                    AutoGenerateColumns="False" Margin="2" 
+                    ItemsSource="{Binding SPointList}" >
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="点名" 
+                        Binding="{Binding Name}"
+                        MinWidth="40"/>
+                            <DataGridTextColumn Header="纬度：B" 
+                        Binding="{Binding dmsB , StringFormat={}{0:##0.####}}" 
+                        MinWidth="100"/>
+                            <DataGridTextColumn Header="经度：L" 
+                        Binding="{Binding dmsL , StringFormat={}{0:##0.####}}" 
+                        MinWidth="100"/>
+                            <DataGridTextColumn Header="X(N)" 
+                        Binding="{Binding X , StringFormat={}{0:##0.###}}" 
+                        MinWidth="100"/>
+                            <DataGridTextColumn Header="Y(E)" 
+                        Binding="{Binding Y, StringFormat={}{0:##0.###}}"
+                        MinWidth="100" />
+                            <DataGridTextColumn Header="γ" 
+                        Binding="{Binding GammaDMSString}"
+                        MinWidth="100" />
+                            <DataGridTextColumn Header="m" 
+                        Binding="{Binding m, StringFormat={}{0:##0.######}}"
+                        MinWidth="100" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+        </Grid>
     </DockPanel>
 
 </Window>

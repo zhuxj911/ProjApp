@@ -107,12 +107,13 @@ namespace ProjApp
             {
                 _Gamma = value;
                 RaisePropertyChanged(() => Gamma);
+                RaisePropertyChanged(() => GammaDMSString);
             }
         }
 
         public string GammaDMSString
         {
-            get => ZXY.SurMath.RADtoDMSString(_Gamma); 
+            get => ZXY.SurMath.RADtoDMSString(Gamma); 
         }
 
 
@@ -129,19 +130,8 @@ namespace ProjApp
 
         public override string ToString()
         {
-            return $"{Name}, {dmsB}, {dmsL}, {X}, {Y}";
+            return $"{Name}, {X}, {Y}, {dmsB}, {dmsL}, {GammaDMSString}, {m}";
         }
 
-        public string ToString(string format)
-        {
-            if (format == "BL" || format == "BLXY")
-            {
-                return $"{Name}, {dmsB}, {dmsL}, {X}, {Y}, {GammaDMSString}, {m}";
-            }
-            else //XY XYBL
-            {
-                return $"{Name}, {X}, {Y}, {dmsB}, {dmsL}, {GammaDMSString}, {m}";
-            }
-        }
     }
 }

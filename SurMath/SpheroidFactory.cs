@@ -12,6 +12,7 @@ namespace ZXY
         public static List<Spheroid> GetSpheroidList() => spheroidList;
 
 
+        //用于数据文件的读写，根据参考椭球带号查找相应椭球
         private static Dictionary<string, Spheroid> spheroids = new Dictionary<string, Spheroid>();
         public static Dictionary<string, Spheroid> GetSpheroids() => spheroids;
 
@@ -23,6 +24,7 @@ namespace ZXY
             spheroidList.Add( Spheroid.CreateWGS84());
             spheroidList.Add(Spheroid.CreateCustomSpheroid(6378137, 298.257222101));
 
+            //用于数据文件的读写，根据参考椭球带号查找相应椭球
             foreach (var it in spheroidList)
             {
                 spheroids.Add(it.Id, it);

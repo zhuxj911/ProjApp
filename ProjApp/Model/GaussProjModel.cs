@@ -22,7 +22,7 @@ namespace ProjApp.Model
             get => SpheroidFactory.GetSpheroidList();
         }
 
-        private Spheroid currentSpheroid = Spheroid.CreateCGCS2000();
+        private Spheroid currentSpheroid = SpheroidFactory.GetSpheroidList()[0];
         public Spheroid CurrentSpheroid
         {
             get => currentSpheroid;
@@ -96,11 +96,7 @@ namespace ProjApp.Model
                 RaisePropertyChanged(() => AngleFormat);
             }
         }
-        /// <summary>
-        /// 数据文件格式
-        /// </summary>
-        private string dataFileFormat = null;
-
+        
         private ObservableCollection<SPoint> sPointList = new ObservableCollection<SPoint>();
         public ObservableCollection<SPoint> SPointList
         {
@@ -157,6 +153,7 @@ namespace ProjApp.Model
                 pnt.X = pnt.Y = 0;
             }
         }
+                
 
         public void ReadDataFile()
         {
@@ -224,9 +221,6 @@ namespace ProjApp.Model
                             case "N":
                                 N = int.Parse(items[1]);
                                 break;
-                            case "FORMAT":
-                                dataFileFormat = items[1].Trim();
-                                break;
                             case "ANGLE":
                                 AngleFormat = items[1].Trim();
                                 break;
@@ -240,52 +234,10 @@ namespace ProjApp.Model
                     if (items.Length < 3) continue; //少于三项数据，不是点的坐标数据，忽略
                     SPoint pnt = new SPoint();
                     pnt.Name = items[0].Trim();
-                    if (dataFileFormat == "XY")
-                    {
-                        pnt.X = double.Parse(items[1]);
-                        pnt.Y = double.Parse(items[2]);
-                        pnt.dmsB = 0; pnt.dmsL = 0;
-                    }
-                    else if (dataFileFormat == "BL")
-                    {
-                        if (AngleFormat == "DEGREE") //单位为度
-                        {
-                            pnt.B = SurMath.DegreetoRAD(double.Parse(items[1]));
-                            pnt.L = SurMath.DegreetoRAD(double.Parse(items[2]));
-                        }
-                        else if (AngleFormat == "RADIAN")//单位为弧度
-                        {
-                            pnt.B = double.Parse(items[1]);
-                            pnt.L = double.Parse(items[2]);
-                        }
-                        else //默认为 D.MMSS
-                        {
-                            pnt.dmsB = double.Parse(items[1]);
-                            pnt.dmsL = double.Parse(items[2]);
-                        }
-                        pnt.X = 0; pnt.Y = 0;
-                    }
-                    else if (dataFileFormat == "BLXY" && items.Length >= 5)
-                    {
-                        if (AngleFormat == "DEGREE") //单位为度
-                        {
-                            pnt.B = SurMath.DegreetoRAD(double.Parse(items[1]));
-                            pnt.L = SurMath.DegreetoRAD(double.Parse(items[2]));
-                        }
-                        else if (AngleFormat == "RADIAN")//单位为弧度
-                        {
-                            pnt.B = double.Parse(items[1]);
-                            pnt.L = double.Parse(items[2]);
-                        }
-                        else //默认为 D.MMSS
-                        {
-                            pnt.dmsB = double.Parse(items[1]);
-                            pnt.dmsL = double.Parse(items[2]);
-                        }
-                        pnt.X = double.Parse(items[3]);
-                        pnt.Y = double.Parse(items[4]);
-                    }
-                    else if (dataFileFormat == "XYBL" && items.Length >= 5)
+                    pnt.X = double.Parse(items[1]);
+                    pnt.Y = double.Parse(items[2]);
+
+                    if (items.Length >= 5)
                     {
                         if (AngleFormat == "DEGREE") //单位为度
                         {
@@ -302,10 +254,7 @@ namespace ProjApp.Model
                             pnt.dmsB = double.Parse(items[3]);
                             pnt.dmsL = double.Parse(items[4]);
                         }
-                        pnt.X = double.Parse(items[1]);
-                        pnt.Y = double.Parse(items[2]);
                     }
-
                     this.SPointList.Add(pnt);
                 }
             }
@@ -347,12 +296,11 @@ namespace ProjApp.Model
                 sr.WriteLine("#ANGLE : DEGREE D.MMSSS RADIAN");
                 sr.WriteLine("ANGLE: D.MMSSS");
 
-                sr.WriteLine("#FORMAT: BL or XY or BLXY or XYBL");
-                sr.WriteLine($"FORMAT: {dataFileFormat}");
+               
                 sr.WriteLine("#点名, B, L, X, Y, 子午线收敛角(γ),长度比(m)");
                 foreach (var pnt in SPointList)
                 {
-                    sr.WriteLine(pnt.ToString(dataFileFormat));
+                    sr.WriteLine(pnt);
                 }
                 sr.Close();
             }

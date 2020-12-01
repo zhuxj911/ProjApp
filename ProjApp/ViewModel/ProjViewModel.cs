@@ -26,7 +26,7 @@ namespace ProjApp.ViewModel
                 gaussProj = value;
                 RaisePropertyChanged(() => GaussProj);
             }
-        }
+        }             
 
         #region Commands
         private RelayCommand readDataFileCommand;

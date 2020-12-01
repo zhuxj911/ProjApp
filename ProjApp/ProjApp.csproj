@@ -132,8 +132,5 @@
   <ItemGroup>
     <Resource Include="TestDataFile\XYtoBLDataFile.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Resource Include="TestDataFile\wwqBLtoXYDataFile.txt" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

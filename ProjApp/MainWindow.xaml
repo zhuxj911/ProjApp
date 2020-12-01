@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ProjApp"
         mc:Ignorable="d"
         DataContext="{Binding Source={StaticResource Locator}, Path=Proj}"
-        Title="测量螺丝刀之高斯投影" Height="720" Width="1024">
+        Title="测量螺丝刀(ver2020)" Height="720" Width="1024">
     <Window.Resources>
         <Style TargetType="Label">
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -54,7 +54,7 @@
                 <RowDefinition Height="60"/>
                 <RowDefinition Height="300*"/>
             </Grid.RowDefinitions>
-            <GroupBox x:Name="groupBox_spheroid" Header="参考椭球"  BorderBrush="Red" BorderThickness="1">
+            <GroupBox Header="参考椭球"  BorderBrush="Red" BorderThickness="1">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="200*"/>
@@ -63,18 +63,18 @@
                         <ColumnDefinition Width="60"/>
                         <ColumnDefinition Width="110*"/>
                     </Grid.ColumnDefinitions>
-                    <ComboBox Grid.Column="0" x:Name="comboBox_Spheroid" 
+                    <ComboBox Grid.Column="0"
                           ItemsSource="{Binding GaussProj.SpheroidList}"
                           SelectedItem="{Binding GaussProj.CurrentSpheroid}"
                           SelectedIndex="0"/>
                     <Label Content="长半轴：a=" Grid.Column="1" HorizontalAlignment="Right"/>
-                    <TextBox x:Name="textBox_a" Grid.Column="2" Text="{Binding GaussProj.CurrentSpheroid.a}" />
+                    <TextBox Grid.Column="2" Text="{Binding GaussProj.CurrentSpheroid.a}" />
                     <Label Content="扁率：1/" Grid.Column="3"  HorizontalAlignment="Right"/>
-                    <TextBox x:Name="textBox_f" Grid.Column="4" Text="{Binding GaussProj.CurrentSpheroid.f}"/>
+                    <TextBox Grid.Column="4" Text="{Binding GaussProj.CurrentSpheroid.f}"/>
                 </Grid>
             </GroupBox>
 
-            <GroupBox x:Name="groupBox_CoordinateSystem" Header="坐标系定义" Grid.Row="1" Margin="3">
+            <GroupBox Header="坐标系定义" Grid.Row="1" Margin="3">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="110"/>
@@ -86,9 +86,9 @@
                         <ColumnDefinition Width="110*"/>
                     </Grid.ColumnDefinitions>
                     <Label Content="中央子午线经度L0=" />
-                    <TextBox x:Name="textBox_L0" Text="{Binding GaussProj.dmsL0}" Grid.Column="1"/>
+                    <TextBox Text="{Binding GaussProj.dmsL0}" Grid.Column="1"/>
                     <Label Content="Y坐标加常数：" Grid.Column="2" />
-                    <TextBox x:Name="textBox_YKM" Text="{Binding GaussProj.YKM}" Grid.Column="3"/>
+                    <TextBox Text="{Binding GaussProj.YKM}" Grid.Column="3"/>
                     <Label Content="km" Grid.Column="4"/>
                     <Label Content="带号：" Grid.Column="5"/>
                     <TextBox Text="{Binding GaussProj.N}"  Grid.Column="6"/>
@@ -97,7 +97,7 @@
 
             <Border  Grid.Row="2" BorderBrush="Red" BorderThickness="2" Margin="3">
                 <Grid>
-                    <DataGrid x:Name="dataGrid_ctrPnt" 
+                    <DataGrid 
                     AutoGenerateColumns="False" Margin="2" 
                     ItemsSource="{Binding GaussProj.SPointList}" >
                         <DataGrid.Columns>
@@ -105,19 +105,19 @@
                         Binding="{Binding Name}"
                         MinWidth="40"/>
                             <DataGridTextColumn Header="纬度：B" 
-                        Binding="{Binding dmsB , StringFormat={}{0:##0.####}}" 
+                        Binding="{Binding dmsB , StringFormat={}{0:##0.#########}}" 
                         MinWidth="100"/>
                             <DataGridTextColumn Header="经度：L" 
-                        Binding="{Binding dmsL , StringFormat={}{0:##0.####}}" 
+                        Binding="{Binding dmsL , StringFormat={}{0:##0.#########}}" 
                         MinWidth="100"/>
                             <DataGridTextColumn Header="X(N)" 
-                        Binding="{Binding X , StringFormat={}{0:##0.###}}" 
+                        Binding="{Binding X , StringFormat={}{0:##0.####}}" 
                         MinWidth="100"/>
                             <DataGridTextColumn Header="Y(E)" 
-                        Binding="{Binding Y, StringFormat={}{0:##0.###}}"
+                        Binding="{Binding Y, StringFormat={}{0:##0.####}}"
                         MinWidth="100" />
                             <DataGridTextColumn Header="γ" 
-                        Binding="{Binding GammaDMSString}"
+                        Binding="{Binding GammaDMSString, Mode=OneWay}"
                         MinWidth="100" />
                             <DataGridTextColumn Header="m" 
                         Binding="{Binding m}"
@@ -127,11 +127,10 @@
                 </Grid>
             </Border>
         </Grid>
-        <Grid>
-            <Border>
-                <Canvas Background="AliceBlue"/>
-            </Border>            
-        </Grid>
+       
+        <Border DockPanel.Dock="Right" BorderThickness="3" BorderBrush="Aqua">
+            <Canvas Background="AliceBlue"/>
+        </Border>  
     </DockPanel>
 
 </Window>

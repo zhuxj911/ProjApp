@@ -13,7 +13,7 @@ namespace UnitTestSurMath
             {
                 //Spheroid BJ = new Spheroid(6378245, 298.3);
 
-                IProj proj = new GaussProj(Spheroid.CreateBeiJing1954());
+                IProj proj = new GaussProj(SpheroidFactory.Spheroids["BJ54"]);
 
                 double B = SurMath.DMStoRAD(21.58470845);
                 double l = SurMath.DMStoRAD(2.25314880);
@@ -27,7 +27,7 @@ namespace UnitTestSurMath
             {
                 //B = 21 ◦ 58 ′ 47.0845 ′′ ,L = 113 ◦ 25 ′ 31.4880 ′′ ，
                 //x = 2433586.692,y = 250547.403            
-                IProj proj = new GaussProj(Spheroid.CreateBeiJing1954());
+                IProj proj = new GaussProj(SpheroidFactory.Spheroids["BJ54"]);
 
                 double B = SurMath.DMStoRAD(21.58470845);
                 double L = SurMath.DMStoRAD(113.25314880);
@@ -45,7 +45,7 @@ namespace UnitTestSurMath
             {
                 //B = 21 ◦ 58 ′ 47.0845 ′′ ,L = 113 ◦ 25 ′ 31.4880 ′′ ，
 
-                IProj proj = new GaussProj(Spheroid.CreateBeiJing1954());
+                IProj proj = new GaussProj(SpheroidFactory.Spheroids["BJ54"]);
 
                 double x = 2433586.692, y = 250547.403;
                 proj.xytoBl(x, y, out double B, out double l, out _, out _);

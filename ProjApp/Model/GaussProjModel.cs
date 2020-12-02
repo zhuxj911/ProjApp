@@ -19,10 +19,10 @@ namespace ProjApp.Model
 
         public List<Spheroid> SpheroidList
         {
-            get => SpheroidFactory.GetSpheroidList();
+            get => SpheroidFactory.SpheroidList;
         }
 
-        private Spheroid currentSpheroid = SpheroidFactory.GetSpheroidList()[0];
+        private Spheroid currentSpheroid = SpheroidFactory.SpheroidList[0];
         public Spheroid CurrentSpheroid
         {
             get => currentSpheroid;
@@ -31,7 +31,7 @@ namespace ProjApp.Model
                 currentSpheroid = value;
                 RaisePropertyChanged( () => CurrentSpheroid );
             }
-        }
+        }        
 
         /// <summary>
         /// 中央子午线的经度，单位:弧度
@@ -105,7 +105,7 @@ namespace ProjApp.Model
 
         public Dictionary<string, Spheroid> Spheroids
         {
-            get => SpheroidFactory.GetSpheroids();
+            get => SpheroidFactory.Spheroids;
         }
 
         public bool IsValidated()

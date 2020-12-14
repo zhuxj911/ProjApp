@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ProjApp"
         mc:Ignorable="d"
         DataContext="{Binding Source={StaticResource Locator}, Path=Proj}"
-        Title="测量螺丝刀(ver2020)" Height="720" Width="1024">
+        Title="{Binding GaussProj.Title}" Height="700" Width="1000">
     <Window.Resources>
         <Style TargetType="Label">
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -23,9 +23,12 @@
     <DockPanel LastChildFill="true" >
         <Menu  DockPanel.Dock="Top">
             <MenuItem Header="文件">
-                <MenuItem Header="打开..." Command="{Binding ReadDataFileCommand}"/>
-                <MenuItem Header="保存..." Command="{Binding SaveDataFileCommand}"/>
-                <Separator/>
+        <MenuItem Header="新建..." Command="{Binding NewFileCommand}"/>
+        <MenuItem Header="打开..." Command="{Binding OpenFileCommand}"/>
+        <Separator/>
+        <MenuItem Header="保存" Command="{Binding SaveFileCommand}"/>
+        <MenuItem Header="另存为..." Command="{Binding SaveAsFileCommand}"/>
+        <Separator/>
                 <MenuItem Header="退出"/>
             </MenuItem>
 

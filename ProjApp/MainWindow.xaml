@@ -4,9 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProjApp"
+        xmlns:viewModels="clr-namespace:ProjApp.ViewModels"
         mc:Ignorable="d"
-        DataContext="{Binding Source={StaticResource Locator}, Path=Proj}"
-        Title="{Binding GaussProj.Title}" Height="700" Width="1000">
+        Title="{Binding Title}" Height="700" Width="1000">
     <Window.Resources>
         <Style TargetType="Label">
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -19,6 +19,9 @@
             <Setter Property="Margin" Value="5" />
         </Style>
     </Window.Resources>
+    <Window.DataContext>
+        <viewModels:ProjViewModel x:Name="ProjViewModel"/>
+    </Window.DataContext>
     
     <DockPanel LastChildFill="true" >
         <Menu  DockPanel.Dock="Top">
@@ -38,8 +41,8 @@
             </MenuItem>
             
             <MenuItem Header="高斯投影">
-                <MenuItem Header="正算" Command="{Binding OnBLtoXYCommand}"/>
-                <MenuItem Header="反算" Command="{Binding OnXYtoBLCommand}"/>
+                <MenuItem Header="正算" Command="{Binding BLtoXYCommand}"/>
+                <MenuItem Header="反算" Command="{Binding XYtoBLCommand}"/>
             </MenuItem>
 
             <MenuItem Header="测量工具">
@@ -67,35 +70,35 @@
                         <ColumnDefinition Width="110*"/>
                     </Grid.ColumnDefinitions>
                     <ComboBox Grid.Column="0"
-                          ItemsSource="{Binding GaussProj.SpheroidList}"
-                          SelectedItem="{Binding GaussProj.CurrentSpheroid}"
+                          ItemsSource="{Binding SpheroidList}"
+                          SelectedItem="{Binding CurrentSpheroid}"
                           SelectedIndex="0"/>
                     <Label Content="长半轴：a=" Grid.Column="1" HorizontalAlignment="Right"/>
-                    <TextBox Grid.Column="2" Text="{Binding GaussProj.CurrentSpheroid.a}" IsEnabled="{Binding GaussProj.CurrentSpheroid.IsCustomSpheroid}" />
+                    <TextBox Grid.Column="2" Text="{Binding CurrentSpheroid.a}" IsEnabled="{Binding CurrentSpheroid.IsCustomSpheroid}" />
                     <Label Content="扁率：1/" Grid.Column="3"  HorizontalAlignment="Right"/>
-                    <TextBox Grid.Column="4" Text="{Binding GaussProj.CurrentSpheroid.f}"
-                     IsEnabled="{Binding GaussProj.CurrentSpheroid.IsCustomSpheroid}" />
+                    <TextBox Grid.Column="4" Text="{Binding CurrentSpheroid.f}"
+                     IsEnabled="{Binding CurrentSpheroid.IsCustomSpheroid}" />
                 </Grid>
             </GroupBox>
 
             <GroupBox Header="坐标系定义" Grid.Row="1" Margin="3">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="110"/>
-                        <ColumnDefinition Width="110*"/>
-                        <ColumnDefinition Width="80"/>
-                        <ColumnDefinition Width="110*"/>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="100*"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100*"/>
                         <ColumnDefinition Width="30"/>
                         <ColumnDefinition Width="40"/>
                         <ColumnDefinition Width="110*"/>
                     </Grid.ColumnDefinitions>
                     <Label Content="中央子午线经度(L0)=" />
-                    <TextBox Text="{Binding GaussProj.dmsL0}" Grid.Column="1"/>
+                    <TextBox Text="{Binding dmsL0}" Grid.Column="1"/>
                     <Label Content="Y坐标加常数:" Grid.Column="2" />
-                    <TextBox Text="{Binding GaussProj.YKM}" Grid.Column="3"/>
+                    <TextBox Text="{Binding YKM}" Grid.Column="3"/>
                     <Label Content="KM" Grid.Column="4"/>
                     <Label Content="带号:" Grid.Column="5"/>
-                    <TextBox Text="{Binding GaussProj.N}"  Grid.Column="6"/>
+                    <TextBox Text="{Binding N}"  Grid.Column="6"/>
                 </Grid>
             </GroupBox>
 
@@ -103,7 +106,7 @@
                 <Grid>
                     <DataGrid 
                     AutoGenerateColumns="False" Margin="2" 
-                    ItemsSource="{Binding GaussProj.SPointList}" >
+                    ItemsSource="{Binding SPointList}" >
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="点名" 
                         Binding="{Binding Name}"
@@ -121,7 +124,7 @@
                         Binding="{Binding Y, StringFormat={}{0:0.####}}"
                         MinWidth="100" />
                             <DataGridTextColumn Header="子午线收敛角(γ)" 
-                        Binding="{Binding GammaDMSString, Mode=OneWay}"
+                        Binding="{Binding Gamma}"
                         MinWidth="100" />
                             <DataGridTextColumn Header="m" 
                         Binding="{Binding m}"

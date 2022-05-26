@@ -20,7 +20,7 @@
         </Style>
     </Window.Resources>
     <Window.DataContext>
-        <viewModels:ProjViewModel x:Name="ProjViewModel"/>
+        <viewModels:ProjViewModel x:Name="projViewModel"/>
     </Window.DataContext>
     
     <DockPanel LastChildFill="true" >
@@ -106,7 +106,7 @@
                 <Grid>
                     <DataGrid 
                     AutoGenerateColumns="False" Margin="2" 
-                    ItemsSource="{Binding SPointList}" >
+                    ItemsSource="{Binding PointList}" >
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="点名" 
                         Binding="{Binding Name}"
@@ -136,7 +136,7 @@
         </Grid>
        
         <Border DockPanel.Dock="Right" BorderThickness="3" BorderBrush="Aqua">
-            <Canvas Background="AliceBlue"/>
+      <local:DrawingCanvas x:Name="figureCanvas" Margin="20"  DrawPoints="{Binding PointList}"/>
         </Border>  
     </DockPanel>
 

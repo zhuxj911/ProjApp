@@ -12,7 +12,7 @@ using ZXY;
 namespace ProjApp.ViewModels;
 
 public class ProjViewModel : ObservableObject
-{
+{   
     public ProjViewModel()
     {
         NewFileCommand = new RelayCommand(this.NewFile);
@@ -82,21 +82,10 @@ public class ProjViewModel : ObservableObject
         set => SetProperty(ref _angleFormat, value);
     }
 
-    private ObservableCollection<GPoint> sPointList = new ObservableCollection<GPoint>();
-    public ObservableCollection<GPoint> SPointList
-    {
-        get => sPointList;
-    }
-
-    public Dictionary<string, Spheroid> Spheroids
-    {
-        get => SpheroidFactory.Spheroids;
-    }
-
-    public bool IsValidated()
-    {
-        return sPointList.Count > 0;
-    }
+    private ObservableCollection<GPoint> pointList = new ObservableCollection<GPoint>();
+    public ObservableCollection<GPoint> PointList => pointList;
+    public Dictionary<string, Spheroid> Spheroids  => SpheroidFactory.Spheroids; 
+    public bool IsValidated() => PointList.Count > 0;
 
     private string fileName = "untitle";
     public string FileName
@@ -105,16 +94,13 @@ public class ProjViewModel : ObservableObject
         set => SetProperty(ref fileName, value);
     }
 
-    public string Title
-    {
-        get => $"测量螺丝刀(Ver2020)-{FileName}";
-    }
+    public string Title  => $"测量螺丝刀(Ver2020)-{FileName}"; 
 
     public ICommand BLtoXYCommand { get; }
     public void BLtoXY()
     {
         IProj proj = new GaussProj(CurrentSpheroid);
-        foreach (var pnt in this.sPointList)
+        foreach (var pnt in this.PointList)
         {
             proj.BLtoXYKM(pnt.B, pnt.L, L0, YKM, N,
                 out double x, out double y,
@@ -130,7 +116,7 @@ public class ProjViewModel : ObservableObject
     public void XYtoBL()
     {
         IProj proj = new GaussProj(CurrentSpheroid);
-        foreach (var pnt in this.sPointList)
+        foreach (var pnt in this.PointList)
         {
             proj.XYKMtoBL(pnt.X, pnt.Y, L0, YKM, N,
                 out double B, out double L, out double gamma, out double m);
@@ -144,7 +130,7 @@ public class ProjViewModel : ObservableObject
     public ICommand ClearBLCommand { get; }
     public void ClearBL()
     {
-        foreach (var pnt in this.sPointList)
+        foreach (var pnt in this.PointList)
         {
             pnt.B = pnt.L = 0;
         }
@@ -153,7 +139,7 @@ public class ProjViewModel : ObservableObject
     public ICommand ClearXYCommand { get; }
     public void ClearXY()
     {
-        foreach (var pnt in this.sPointList)
+        foreach (var pnt in this.PointList)
         {
             pnt.X = pnt.Y = 0;
         }
@@ -167,7 +153,7 @@ public class ProjViewModel : ObservableObject
         dmsL0 = 0;
         YKM = 0;
         N = 0;
-        SPointList.Clear();
+        PointList.Clear();
     }
 
     public ICommand OpenFileCommand { get; }
@@ -184,7 +170,7 @@ public class ProjViewModel : ObservableObject
             string buffer;
             string[] items = null;
             //读入点的坐标数据
-            this.SPointList.Clear();
+            this.PointList.Clear();
             while (true)
             {
                 buffer = sr.ReadLine();
@@ -272,7 +258,7 @@ public class ProjViewModel : ObservableObject
                         pnt.dmsL = double.Parse(items[4]);
                     }
                 }
-                this.SPointList.Add(pnt);
+                this.PointList.Add(pnt);
             }
         }
     }
@@ -330,7 +316,7 @@ public class ProjViewModel : ObservableObject
 
 
             sr.WriteLine("#点名, B, L, X, Y, 子午线收敛角(γ),长度比(m)");
-            foreach (var pnt in SPointList)
+            foreach (var pnt in PointList)
             {
                 sr.WriteLine(pnt);
             }

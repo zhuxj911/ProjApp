@@ -1,12 +1,10 @@
-﻿using ProjApp.Model;
+﻿using ProjApp.Models;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.IO;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
-namespace ProjApp;
+namespace ProjApp.Views;
 
 public class DrawingCanvas : System.Windows.Controls.Canvas
 {
@@ -29,15 +27,14 @@ public class DrawingCanvas : System.Windows.Controls.Canvas
 
     private void DrawPoints_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
-        this.InvalidateVisual();
+        InvalidateVisual();
     }
+
     //定义依赖属性，绑定绘图数据源
 
-
-
     //使用DrawVisual画Polyline
-    public void DrawLine(DrawingContext dc,  double x0, double y0, double x1, double y1, Brush color, double thinkness)
-    { 
+    public void DrawLine(DrawingContext dc, double x0, double y0, double x1, double y1, Brush color, double thinkness)
+    {
         Pen pen = new Pen(color, thinkness);
         pen.Freeze();  //冻结画笔，这样能加快绘图速度
         dc.DrawLine(pen, new Point(x0, y0), new Point(x1, y1));
@@ -45,16 +42,18 @@ public class DrawingCanvas : System.Windows.Controls.Canvas
 
     public void DrawText(DrawingContext dc, string text, double x, double y)
     {
-        Typeface tp = new Typeface(new FontFamily("宋体"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
-        FormattedText ft = new FormattedText(text, new CultureInfo("zh-cn"), FlowDirection.LeftToRight, tp, 12, Brushes.Black);
-        //PixelsPerDip
+        FormattedText ft = new FormattedText(text,
+           System.Globalization.CultureInfo.CurrentCulture,
+           FlowDirection.LeftToRight,
+               new Typeface("Microsoft YaHei"), 12, Brushes.Black,
+               VisualTreeHelper.GetDpi(this).PixelsPerDip);
 
         dc.DrawText(ft, new Point(x, y));
     }
 
     //使用DrawVisual画Circle，用作控制点
     public void DrawCtrPnt(DrawingContext dc, double x, double y, Brush color, double thinkness)
-    {     
+    {
         Pen pen = new Pen(color, thinkness);
         pen.Freeze();  //冻结画笔，这样能加快绘图速度
         dc.DrawEllipse(Brushes.LemonChiffon, pen, new Point(x, y), 5, 5);
@@ -73,6 +72,7 @@ public class DrawingCanvas : System.Windows.Controls.Canvas
 
     //以下定义为绘图使用
     private double minX;  //高斯坐标X的最小值xn
+
     private double minY;  //高斯坐标Y的最小值yn
     private double maxX; //高斯坐标X的最大值xm
     private double maxY; //高斯坐标Y的最大值ym
@@ -83,26 +83,25 @@ public class DrawingCanvas : System.Windows.Controls.Canvas
     private double k;  //变换比例
 
     private void OnDraw(DrawingContext dc)
-    {        
+    {
         if (DrawPoints.Count == 0) return;
 
         GetGaussXySize();
 
-        maxVX = this.ActualWidth;
-        maxVY = this.ActualHeight;
+        maxVX = ActualWidth;
+        maxVY = ActualHeight;
 
         double kx = maxVX / (maxY - minY);
         double ky = maxVY / (maxX - minX);
         k = kx <= ky ? kx : ky;
 
-  
         foreach (var pt in DrawPoints)
         {
             if (pt.X <= 0 || pt.Y <= 0) continue; //排除坐标为0的点
 
             GaussXyToViewXy(pt.X, pt.Y, out double x0, out double y0);
-            this.DrawCtrPnt(dc, x0, y0, Brushes.Red, 1);
-            this.DrawText(dc, pt.Name, x0 + 10, y0 - 7);
+            DrawCtrPnt(dc, x0, y0, Brushes.Red, 1);
+            DrawText(dc, pt.Name, x0 + 10, y0 - 7);
         }
     }
 
@@ -140,7 +139,7 @@ public class DrawingCanvas : System.Windows.Controls.Canvas
     protected override void OnRender(DrawingContext dc)
     {
         base.OnRender(dc);
-        if (DrawPoints != null) this.OnDraw(dc);
+        if (DrawPoints != null) OnDraw(dc);
     }
 
     public void OutToBmp(string bmpFileName)

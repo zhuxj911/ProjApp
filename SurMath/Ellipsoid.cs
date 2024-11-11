@@ -9,10 +9,10 @@ namespace ZXY
     /// <summary>
     /// 参考椭球
     /// </summary>
-    public class Spheroid
+    public class Ellipsoid
     {
         public string Id { get; set; } //约定CS00代表自定义参考椭球
-        public bool IsCustomSpheroid //用于控制界面，如果为自定义椭球，则可以改变 a f 文本输入框中的值
+        public bool IsCustomEllipsoid //用于控制界面，如果为自定义椭球，则可以改变 a f 文本输入框中的值
         {
             get => Id == "CS00";
         }
@@ -28,7 +28,7 @@ namespace ZXY
                 if (value > 6371000)
                 {
                     _a = value;                   
-                    InitSpheroid();
+                    InitEllipsoid();
                 }
             }
         }
@@ -44,7 +44,7 @@ namespace ZXY
                 if (value > 298 && value < 299)
                 {
                     _f = value;                  
-                    InitSpheroid();
+                    InitEllipsoid();
                 }
             }
         }
@@ -59,7 +59,7 @@ namespace ZXY
         private double A8 { get;  set; }
         
        
-        private void InitSpheroid()
+        private void InitEllipsoid()
         {
             //防御性处理，防止界面上给a与f输入值0导致程序崩溃
             if (a <= 0 || f <= 0) return; 
@@ -88,7 +88,7 @@ namespace ZXY
         /// </summary>
         /// <param name="semimajor_axis">长半轴</param>
         /// <param name="inverse_flattening">扁率的分母</param>
-        public Spheroid(double semimajor_axis, double inverse_flattening)
+        public Ellipsoid(double semimajor_axis, double inverse_flattening)
         {
             //此处使用属性a, f接收参数，因此不需要调用函数 InitSpheroid
             this.a = semimajor_axis;

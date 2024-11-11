@@ -8,10 +8,10 @@ namespace ZXY
 {
     public class GaussProj : IProj
     {
-        private Spheroid spheroid;
-        public GaussProj(Spheroid spheroid)
+        private Ellipsoid ellipsoid;
+        public GaussProj(Ellipsoid ellipsoid)
         {
-            this.spheroid = spheroid;
+            this.ellipsoid = ellipsoid;
         }
 
         public void Bltoxy(double B, double l,
@@ -27,14 +27,14 @@ namespace ZXY
             double t2 = t * t;
             double t4 = t2 * t2;
 
-            double g2 = spheroid.funG2(cosB2);
+            double g2 = ellipsoid.funG2(cosB2);
             double g4 = g2 * g2;
 
             double l2 = l * l;
             double l4 = l2 * l2;
 
-            double X = spheroid.funX(B);
-            double N = spheroid.funN(sinB * sinB);
+            double X = ellipsoid.funX(B);
+            double N = ellipsoid.funN(sinB * sinB);
             x = X + N * sinB * cosB * l2 * (
                 0.5
                 + cosB2 / 24.0 * (5 - t2 + 9 * g2 + 4 * g4) * l2
@@ -85,7 +85,7 @@ namespace ZXY
             out double B, out double l,
             out double gamma, out double m)
         {
-            double Bf = spheroid.funBf(x);
+            double Bf = ellipsoid.funBf(x);
             double tf = Math.Tan(Bf);
             double tf2 = tf * tf;
             double tf4 = tf2 * tf2;
@@ -93,13 +93,13 @@ namespace ZXY
             double sinBf = Math.Sin(Bf);
             double sinBf2 = sinBf * sinBf;
 
-            double Mf = spheroid.funM(sinBf2);
-            double Nf = spheroid.funN(sinBf2);
+            double Mf = ellipsoid.funM(sinBf2);
+            double Nf = ellipsoid.funN(sinBf2);
             double Nf2 = Nf * Nf;
             double Nf4 = Nf2 * Nf2;
 
             double cosBf = Math.Cos(Bf);
-            double gf2 = spheroid.funG2(cosBf * cosBf);
+            double gf2 = ellipsoid.funG2(cosBf * cosBf);
 
             double y2 = y * y;
             double y4 = y2 * y2;
@@ -122,7 +122,7 @@ namespace ZXY
 
             double sinB = Math.Sin(B);
             double sinB2 = sinB * sinB;
-            double R = spheroid.funR(sinB2);
+            double R = ellipsoid.funR(sinB2);
             double R2 = R * R;
             double R4 = R2 * R2;
             m = 1 + y2 / 2.0 / R2 + y4 / 24.0 / R4;

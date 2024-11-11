@@ -11,8 +11,8 @@ namespace ZXY
         private GaussProj gaussProj;
         private double k = 0.9996;
 
-        private Spheroid spheroid;
-        public UTMProj(Spheroid spheroid)
+        private Ellipsoid spheroid;
+        public UTMProj(Ellipsoid spheroid)
         {
             this.spheroid = spheroid;
             gaussProj = new GaussProj(spheroid);

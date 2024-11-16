@@ -1,11 +1,11 @@
 ﻿<Page
-    x:Class="ProjApp.Views.ProjPage"
+    x:Class="ProjApp.Pages.ProjPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:ProjApp.Views"
+    xmlns:local="clr-namespace:ProjApp.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:viewmodels="clr-namespace:ProjApp.ViewModels"
     Title="{Binding Title}"
     d:DesignHeight="450"
@@ -29,7 +29,7 @@
     </Page.DataContext>
 
     <DockPanel LastChildFill="true">
-        <Menu DockPanel.Dock="Top">
+        <Menu DockPanel.Dock="Top" >
             <MenuItem Header="文件">
                 <MenuItem Command="{Binding NewFileCommand}" Header="新建..." />
                 <MenuItem Command="{Binding OpenFileCommand}" Header="打开..." />

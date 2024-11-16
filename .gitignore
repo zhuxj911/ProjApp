@@ -1,5 +1,8 @@
-/.vs
-/packages
-/TestResults
-obj
-bin
+.vs/
+.idea/
+packages/
+TestResults/
+obj/
+bin/
+*.user
+

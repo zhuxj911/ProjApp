@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
 
-namespace ProjApp.Views;
+namespace ProjApp.Pages;
 
 public class DrawingCanvas : System.Windows.Controls.Canvas
 {

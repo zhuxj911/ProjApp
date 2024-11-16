@@ -1,11 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace ProjApp.Views
+namespace ProjApp.Pages
 {
     /// <summary>
     /// Interaction logic for AzimuthPage.xaml
     /// </summary>
-    public partial class AzimuthPage : Page
+    public partial class AzimuthPage
     {
         public AzimuthPage()
         {

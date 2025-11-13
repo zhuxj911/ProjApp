@@ -10,7 +10,7 @@ using ZXY;
 
 namespace ProjApp.ViewModels;
 
-public partial class ProjViewModel : ObservableObject
+public partial class ProjViewModel : ViewModelBase
 {
     public List<Ellipsoid> EllipsoidList => EllipsoidFactory.EllipsoidList;
 

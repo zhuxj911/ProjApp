@@ -1,11 +1,12 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ProjApp.Models;
-using System;
+using ZXY;
 
 namespace ProjApp.ViewModels;
 
-public partial class AzimuthViewModel : ObservableObject
+public partial class AzimuthViewModel : ViewModelBase
 {
     public AzimuthViewModel()
     {
@@ -133,7 +134,7 @@ public partial class AzimuthViewModel : ObservableObject
     /// <summary>
     /// 控制计算按钮是否可用
     /// </summary>  
-    public bool CanCalculate => Math.Abs(A.X - B.X) >= 0.0001 || Math.Abs(A.Y - B.Y) >= 0.0001;
+    public bool CanCalculate => Math.Abs(A.X - B.X) >= 0.1 || Math.Abs(A.Y - B.Y) >= 0.1;
 
 
 
@@ -150,8 +151,9 @@ public partial class AzimuthViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanCalculate))]
     private void Calculate()
     {
-        var ad = ZXY.SurMath.Azimuth(A.X, A.Y, B.X, B.Y);
-        AzValue = ZXY.SurMath.RadianToDmsString(ad.a);
+        // var ad = ZXY.SurMath.Azimuth(A.X, A.Y, B.X, B.Y);
+        var ad = A.Azimuth(B); //使用接口扩展
+        AzValue = ZXY.SurMath.RadianToDmsString(ad.a); 
         Dist = ad.d;
         AzName = $"{A.Name} -> {B.Name} 坐标方位角";
     }

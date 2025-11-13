@@ -1,4 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using ProjApp.ViewModels;
+using ZXY;
 
 /**
 * Model命名空间中的内容不应包括界面中的内容
@@ -12,7 +14,7 @@
 
 namespace ProjApp.Models;
 
-public partial class GPoint : ObservableObject
+public partial class GPoint : ViewModelBase, IPoint
 {
     private ZXY.Point point = new();
 

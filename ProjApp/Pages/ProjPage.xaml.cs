@@ -1,8 +1,4 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Controls;
-
-namespace ProjApp.Pages
+﻿namespace ProjApp.Pages
 {
     /// <summary>
     /// Interaction logic for ProjPage.xaml

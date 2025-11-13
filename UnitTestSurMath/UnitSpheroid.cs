@@ -1,13 +1,10 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ZXY;
+﻿using ZXY;
 
 namespace UnitTestSurMath
 {
-    [TestClass]
     public class UnitSpheroid
     {
-        [TestMethod]
+        [Fact]
         public void TestBltoxy()
         {
             {
@@ -20,8 +17,8 @@ namespace UnitTestSurMath
                 proj.Bltoxy(B, l, out double x, out double y, out _, out _);
                 //B = 21 ◦ 58 ′ 47.0845 ′′ ,L = 113 ◦ 25 ′ 31.4880 ′′ ，
                 //x = 2433586.692,y = 250547.403
-                Assert.AreEqual(2433586.692, x, 1e-3);
-                Assert.AreEqual(250547.403, y, 1e-3);
+                Assert.Equal(2433586.692, x, 1e-3);
+                Assert.Equal(250547.403, y, 1e-3);
             }
 
             {
@@ -34,12 +31,12 @@ namespace UnitTestSurMath
                 double L0 = SurMath.DmsToRadian(111);
                 proj.BLtoXYKM(B, L, L0, 0, 0, out double x, out double y);
 
-                Assert.AreEqual(2433586.692, x, 1e-3);
-                Assert.AreEqual(250547.403, y, 1e-3);
+                Assert.Equal(2433586.692, x, 1e-3);
+                Assert.Equal(250547.403, y, 1e-3);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void TestxytoBl()
         {
             {
@@ -53,8 +50,8 @@ namespace UnitTestSurMath
                 B = SurMath.RadianToDms(B);
                 l = SurMath.RadianToDms(l);
 
-                Assert.AreEqual(21.58470845, B, 1e-8);
-                Assert.AreEqual(2.25314880, l, 1e-8);
+                Assert.Equal(21.58470845, B, 1e-8);
+                Assert.Equal(2.25314880, l, 1e-8);
             }
 
         }

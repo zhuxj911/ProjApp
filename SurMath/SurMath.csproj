@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <MinimumPlatformVersion>10.0.17763.0</MinimumPlatformVersion>
     <AssemblyName>ZXY</AssemblyName>
+    <TargetFrameworks>net10.0;net8.0;net9.0</TargetFrameworks>
   </PropertyGroup>
 
 </Project>

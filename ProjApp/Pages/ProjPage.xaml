@@ -50,10 +50,6 @@
                 <MenuItem Command="{Binding XYtoBLCommand}" Header="反算" />
             </MenuItem>
 
-            <MenuItem Header="测量工具">
-                <MenuItem Click="MenuItem_Click" Header="坐标方位角计算" />
-            </MenuItem>
-
             <MenuItem Header="帮助">
                 <MenuItem Header="关于..." />
             </MenuItem>
@@ -61,9 +57,9 @@
 
         <Grid DockPanel.Dock="Left">
             <Grid.RowDefinitions>
-                <RowDefinition Height="50" />
-                <RowDefinition Height="60" />
-                <RowDefinition Height="300*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <GroupBox
                 BorderBrush="Red"
@@ -72,9 +68,9 @@
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="200*" />
-                        <ColumnDefinition Width="70" />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="110*" />
-                        <ColumnDefinition Width="60" />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="110*" />
                     </Grid.ColumnDefinitions>
                     <ComboBox
@@ -107,12 +103,12 @@
                 Header="坐标系定义">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="100*" />
-                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="100*" />
-                        <ColumnDefinition Width="30" />
-                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="110*" />
                     </Grid.ColumnDefinitions>
                     <Label Content="中央子午线经度(L0)=" />

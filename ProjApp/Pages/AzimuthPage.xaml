@@ -16,59 +16,77 @@
     <Page.DataContext>
         <vm:AzimuthViewModel />
     </Page.DataContext>
+    
+    <Page.Resources>
+        <Style TargetType="GroupBox">
+            <Setter Property="Margin" Value="5" />
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Background" Value="AliceBlue" />
+            <Setter Property="Margin" Value="2" />
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="TextAlignment" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="5" />
+        </Style>
+    </Page.Resources>
 
-    <Grid Margin="3">
+    <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <GroupBox Margin="5"
+        <GroupBox
             Grid.Row="0"
-            Header="起点坐标">
-            <Grid Margin="5">
+            Header="起点">
+            <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="40" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="120*" />
-                    <ColumnDefinition Width="30" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="120*" />
-                    <ColumnDefinition Width="30" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="120*" />
                 </Grid.ColumnDefinitions>
 
                 <TextBlock
                     Grid.Column="0"
-                    VerticalAlignment="Center"
                     Text="点名" />
-                <ui:TextBox
+                <TextBox
                     Grid.Column="1"
                     d:Text="GP11"
-                    PlaceholderText="输入点名..."
                     Text="{Binding A.Name}" />
                 <TextBlock Grid.Column="2" Text="X=" />
                 
                 <TextBox
                     Grid.Column="3"
                     d:Text="50342.464"
-                    Text="{Binding A.X}" />
+                    Text="{Binding A.X, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBlock Grid.Column="4" Text="Y=" />
                 <TextBox
                     Grid.Column="5"
                     d:Text="3528.978"
-                    Text="{Binding A.Y}" />
+                    Text="{Binding A.Y, UpdateSourceTrigger=PropertyChanged}" />
             </Grid>
         </GroupBox>
+        
         <GroupBox
             Grid.Row="1"
-            Header="方向点坐标">
+            Header="方向点">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="40" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="120*" />
-                    <ColumnDefinition Width="30" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="120*" />
-                    <ColumnDefinition Width="30" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="120*" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Text="点名" />
@@ -80,46 +98,23 @@
                 <TextBox
                     Grid.Column="3"
                     d:Text="50289.874"
-                    Text="{Binding B.X}" />
+                    Text="{Binding B.X, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBlock Grid.Column="4" Text="Y=" />
                 <TextBox
                     Grid.Column="5"
                     d:Text="3423.232"
-                    Text="{Binding B.Y}" />
+                    Text="{Binding B.Y, UpdateSourceTrigger=PropertyChanged}" />
             </Grid>
         </GroupBox>
-        <Border
-            Grid.Row="2"
-            Margin="5"
-            Background="AliceBlue"
-            CornerRadius="5">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="1*" />
-                </Grid.ColumnDefinitions>
-
-                <Button
-                    Grid.Column="2"
-                    Command="{Binding Path=SwitchABCommand}"
-                    Content="起点 &lt;-&gt;方向点"/>
-                <Button
-                    Grid.Column="3"
-                    Command="{Binding Path=CalculateCommand}"
-                    Content="计算"/>
-            </Grid>
-        </Border>
-
+        
         <GroupBox
-            Grid.Row="3"
+            Grid.Row="2"
             Header="计算成果">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="160*" />
                     <ColumnDefinition Width="120*" />
-                    <ColumnDefinition Width="40" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="80*" />
                 </Grid.ColumnDefinitions>
                 <TextBlock
@@ -137,5 +132,30 @@
                     Text="{Binding Dist}" />
             </Grid>
         </GroupBox>
+        
+        <Border
+            Grid.Row="3"
+            Margin="5"
+            Background="AliceBlue"
+            CornerRadius="5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Button
+                    Grid.Column="2"
+                    Command="{Binding Path=SwitchABCommand}"
+                    Content="起点 &lt;-&gt;方向点"/>
+                <Button
+                    Grid.Column="3"
+                    Command="{Binding Path=CalculateCommand}"
+                    Content="计算"/>
+            </Grid>
+        </Border>
+        
     </Grid>
 </Page>

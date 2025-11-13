@@ -1,6 +1,4 @@
-﻿using System.Windows.Controls;
-
-namespace ProjApp.Pages
+﻿namespace ProjApp.Pages
 {
     /// <summary>
     /// Interaction logic for AzimuthPage.xaml

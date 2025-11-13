@@ -63,12 +63,18 @@ public static class SurMath
     /// <returns>度分秒角度:1.2030</returns>
     public static (int d, int m, double s) Radian2Dms(double radAngle)
     {
-        radAngle *= TOSECOND;
-        int angle = (int)radAngle;
+        // radAngle *= TOSECOND;
+        // int angle = (int)radAngle;
+        // int d = angle / 3600;
+        // angle -= d * 3600;
+        // int m = angle / 60;
+        // double s = radAngle - d * 3600 - m * 60;
+        // return (d, m, s);
+        var rad = (decimal)(radAngle * TOSECOND); //以秒为单位
+        var angle = (int)rad;
         int d = angle / 3600;
-        angle -= d * 3600;
-        int m = angle / 60;
-        double s = radAngle - d * 3600 - m * 60;
+        int m = (angle - d * 3600) / 60;
+        double s = (double)(rad - d * 3600 - m * 60);
         return (d, m, s);
     }
 
@@ -90,13 +96,8 @@ public static class SurMath
     /// <returns>度、分、秒字符串 1°02′30.5″</returns>
     public static string RadianToDmsString(double radAngle)
     {
-        int f = radAngle >= 0 ? 1 : -1;
-        string ff = radAngle >= 0 ? "" : "-";
-        var dms = Radian2Dms(radAngle);
-        if (Math.Abs(dms.s) < 1e-10)
-            return $"{ff}{f * dms.d}°{f * dms.m:00}′{0:00.######}″";
-        else
-            return $"{ff}{f * dms.d}°{f * dms.m:00}′{f * dms.s:00.######}″";
+        var dms = RadianToDms(radAngle);
+        return DmsToDmsString(dms);
     }
 
     /// <summary>
@@ -109,10 +110,10 @@ public static class SurMath
     /// <returns>A->B的坐标方位角，单位弧度, 距离</returns>
     public static (double a, double d) Azimuth(double xA, double yA, double xB, double yB)
     {
-        double dx = xB - xA;
-        double dy = yB - yA;
-        double d = Math.Sqrt(dx * dx + dy * dy);
-        double a = Math.Atan2(dy, dx) + (dy >= 0 ? 0 : 1) * TWOPI;
+        var dx = xB - xA;
+        var dy = yB - yA;
+        var d = Math.Sqrt(dx * dx + dy * dy);
+        var a = Math.Atan2(dy, dx) + (dy >= 0 ? 0 : 1) * TWOPI;
         return (a, d);
     }
 

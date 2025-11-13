@@ -2,12 +2,17 @@
 
 namespace ZXY;
 
+public interface IPoint{
+    double X { get; set; }
+    double Y { get; set; }
+}
+
 /// <summary>
-/// 对点类Point进行功能扩展
+/// 针对接口Ipoint进行功能扩展，而不是针对点类Point进行功能扩展
 /// </summary>
-public static class PointExtension
+public static class PointExtensions
 {
-    public static (double a, double d) Azimuth(this Point A, Point B)
+    public static (double a, double d) Azimuth(this IPoint A, IPoint B)
     {
         return SurMath.Azimuth(A.X, A.Y, B.X, B.Y);
     }
@@ -19,7 +24,7 @@ public static class PointExtension
     /// <param name="dx"></param>
     /// <param name="dy"></param>
     /// <param name="alpha">旋转角，单位为弧度</param>
-    public static void TransformXY(this Point pt, double dx, double dy, double alpha)
+    public static void TransformXY(this IPoint pt, double dx, double dy, double alpha)
     {
         var xy = SurMath.TransformXY(pt.X, pt.Y, dx, dy, alpha);
         pt.X = xy.X; pt.Y = xy.Y;
@@ -32,7 +37,7 @@ public static class PointExtension
     /// <param name="p2"></param>
     /// <param name="p3"></param>
     /// <returns>左偏：−1 或 右偏或直线：1</returns>
-    public static int IsRight(this Point p1, Point p2, Point p3)
+    public static int IsRight(this IPoint p1, IPoint p2, IPoint p3)
     {
         if ((p2.Y - p1.Y) * (p3.X - p2.X) <= (p3.Y - p2.Y) * (p2.X - p1.X))
             return 1;
@@ -47,7 +52,7 @@ public static class PointExtension
     /// <param name="second"></param>
     /// <param name="three"></param>
     /// <returns>偏转角α， 单位弧度， 右+/左-</returns>
-    public static double CalculateAlpha(this Point first, Point second, Point three)
+    public static double CalculateAlpha(this IPoint first, IPoint second, IPoint three)
     {
         //判断 start -> JD -> end 是偏右？ 还是 偏左？
         var flag = IsRight(first, second, three);

@@ -61,9 +61,8 @@ public partial class ProjViewModel : ViewModelBase
         set => SetProperty(ref _ykm, value);
     }
 
-    private ObservableCollection<GPoint> pointList = new ObservableCollection<GPoint>();
-    public ObservableCollection<GPoint> PointList => pointList;
-    public Dictionary<string, Ellipsoid> Ellipsoids => EllipsoidFactory.Ellipsoids;
+    private ObservableCollection<GeoPoint> pointList = new ObservableCollection<GeoPoint>();
+    public ObservableCollection<GeoPoint> PointList => pointList;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Title))]
@@ -83,11 +82,9 @@ public partial class ProjViewModel : ViewModelBase
         IProj proj = new GaussProj(CurrentEllipsoid);
         foreach (var pnt in this.PointList)
         {
-            proj.BLtoXYKM(pnt.B, pnt.L, L0, YKM, N,
-                out double x, out double y,
-                out double gamma, out double m);
-            pnt.X = x;
-            pnt.Y = y;
+            var (n, e, gamma, m) = proj.Forward(pnt.B, pnt.L, L0, YKM, N);
+            pnt.X = n;
+            pnt.Y = e;
             pnt.Gamma = ZXY.SurMath.RadianToDmsString(gamma);
             pnt.M = m;
         }
@@ -99,10 +96,9 @@ public partial class ProjViewModel : ViewModelBase
         IProj proj = new GaussProj(CurrentEllipsoid);
         foreach (var pnt in this.PointList)
         {
-            proj.XYKMtoBL(pnt.X, pnt.Y, L0, YKM, N,
-                out double B, out double L, out double gamma, out double m);
-            pnt.B = B;
-            pnt.L = L;
+            var (lat, lon, gamma, m) = proj.Inverse(pnt.X, pnt.Y, L0, YKM, N);
+            pnt.B = lat;
+            pnt.L = lon;
             pnt.Gamma = ZXY.SurMath.RadianToDmsString(gamma);
             pnt.M = m;
         }
@@ -129,7 +125,7 @@ public partial class ProjViewModel : ViewModelBase
     [RelayCommand]
     public void NewFile()
     {
-        CurrentEllipsoid = Ellipsoids["CGCS2000"];
+        CurrentEllipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.CGCS2000];
         dmsL0 = 0;
         YKM = 0;
         N = 0;
@@ -139,9 +135,11 @@ public partial class ProjViewModel : ViewModelBase
     [RelayCommand]
     public void OpenFile()
     {
-        OpenFileDialog dlg = new OpenFileDialog();
-        dlg.DefaultExt = ".txt";
-        dlg.Filter = "高斯投影坐标数据|*.txt|All File(*.*)|*.*";
+        OpenFileDialog dlg = new OpenFileDialog
+        {
+            DefaultExt = ".txt",
+            Filter = "高斯投影坐标数据|*.txt|All File(*.*)|*.*"
+        };
         if (dlg.ShowDialog() != true) return;
         FileName = dlg.FileName;
 
@@ -162,7 +160,7 @@ public partial class ProjViewModel : ViewModelBase
                 //处理含 : 的项
                 if (buffer.Contains<char>(':'))
                 {
-                    items = buffer.Split(new char[1] { ':' });
+                    items = buffer.Split([':']);
 
                     string itemName = items[0].Trim();
                     switch (itemName)
@@ -171,17 +169,17 @@ public partial class ProjViewModel : ViewModelBase
                             string item2 = items[1].Trim();
                             if ((item2 == "CS00"))
                             {
-                                string[] its = item2.Split(new char[1] { ',' });
+                                string[] its = item2.Split([':']);
                                 if (its.Length == 3 && its[0] == "CS00")
                                 {
-                                    CurrentEllipsoid = Ellipsoids["CS00"];
+                                    CurrentEllipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.CS00];
                                     CurrentEllipsoid.a = double.Parse(its[1]);
                                     CurrentEllipsoid.f = double.Parse(its[2]);
                                 }
                             }
                             else //item2 == "BJ54" or item2 == "XA80" or item2 == "WGS84" or item2 == "CGCS2000"
                             {
-                                CurrentEllipsoid = Ellipsoids[item2];
+                                CurrentEllipsoid = EllipsoidFactory.IdEllipsoids[item2];
                             }
                             break;
 
@@ -204,9 +202,9 @@ public partial class ProjViewModel : ViewModelBase
                     continue; //处理完毕继续
                 }
 
-                items = buffer.Split(new char[1] { ',' });
+                items = buffer.Split([',']);
                 if (items.Length < 3) continue; //少于三项数据，不是点的坐标数据，忽略
-                GPoint pnt = new GPoint();
+                GeoPoint pnt = new GeoPoint();
                 pnt.Name = items[0].Trim();
                 pnt.X = double.Parse(items[1]);
                 pnt.Y = double.Parse(items[2]);
@@ -251,19 +249,19 @@ public partial class ProjViewModel : ViewModelBase
             sr.WriteLine("#数据文件中的 # : , 均应为英文字符");
             sr.WriteLine("#可以忽略0个空格的行");
             sr.WriteLine("#可以忽略有多个空格的行");
-            sr.WriteLine("#CS 指定坐标系 BJ54 XA80 CGCS2000 WGS84 CS00");
-            sr.WriteLine("#CS: BJ54");
-            sr.WriteLine("#CS: XA80");
-            sr.WriteLine("#CS: WGS84");
+            sr.WriteLine("#CS 指定坐标系 Beijing1954 Xian1980 CGCS2000 WGS1984 CS00");
+            sr.WriteLine("#CS: Beijing1954");
+            sr.WriteLine("#CS: Xian1980");
+            sr.WriteLine("#CS: WGS1984");
             sr.WriteLine("#CS: CGCS2000");
             sr.WriteLine("#CS: CS00, 6378137, 298.257222101");
-            if (CurrentEllipsoid.Id == "CS00")
+            if (CurrentEllipsoid.Id.ToString() == "CS00")
             {
-                sr.WriteLine($"CS: {CurrentEllipsoid.Id}, {CurrentEllipsoid.a}, {CurrentEllipsoid.f}");
+                sr.WriteLine($"CS: {CurrentEllipsoid.Id.ToString()}, {CurrentEllipsoid.a}, {CurrentEllipsoid.f}");
             }
             else
             {
-                sr.WriteLine($"CS: {CurrentEllipsoid.Id}");
+                sr.WriteLine($"CS: {CurrentEllipsoid.Id.ToString()}");
             }
             sr.WriteLine("#角度数据格式为D.MMSS");
             sr.WriteLine($"L0: {dmsL0}");

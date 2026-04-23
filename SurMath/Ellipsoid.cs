@@ -3,14 +3,27 @@
 namespace ZXY;
 
 /// <summary>
+/// 参考椭球类型
+/// </summary>
+public enum EllipsoidType
+{
+    CS00 = 0,
+    Beijing1954 = 1,
+    Xian1980 = 2,
+    WGS1984 = 3,
+    CGCS2000 = 4
+}
+
+
+/// <summary>
 /// 参考椭球
 /// </summary>
 public class Ellipsoid
 {
-    public string Id { get; set; } //约定CS00代表自定义参考椭球
+    public EllipsoidType Id { get; set; } //约定CS00代表自定义参考椭球
     public bool IsCustomEllipsoid //用于控制界面，如果为自定义椭球，则可以改变 a f 文本输入框中的值
     {
-        get => Id == "CS00";
+        get => Id == EllipsoidType.CS00;
     }
 
     public string Name { get; set; }

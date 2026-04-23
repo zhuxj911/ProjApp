@@ -1,44 +1,29 @@
 ﻿namespace ZXY;
 
+/// <summary>
+/// 高斯/UTM投影接口
+/// </summary>
 public interface IProj
 {
-   void Bltoxy(double B, double l,
-      out double x, out double y,
-      out double gamma, out double m);
+    /// <summary>
+    /// 投影正算，根据经纬度投影计算North-East坐标
+    /// </summary>
+    /// <param name="lat">纬度，单位：弧度</param>
+    /// <param name="lon">经度，单位：弧度</param>
+    /// <param name="lon0">中央子午线经度，单位：弧度</param>
+    /// <param name="ykm">Y坐标加常数，单位：km，一般为500km</param>
+    /// <param name="zone">带号</param>
+    /// <returns>North, East, 子午线收敛角γ，单位：弧度，长度比m </returns>
+    (double n, double e, double gamma, double m) Forward(double lat, double lon, double lon0, double ekm = 500.0, double zone = 0.0);
 
-   /// <summary>
-   /// 根据经纬度计算XY坐标（Y带加常数）
-   /// </summary>
-   /// <param name="B">纬度，单位：弧度</param>
-   /// <param name="L">经度，单位：弧度</param>
-   /// <param name="L0">中央子午线经度，单位：弧度</param>
-   /// <param name="YKM">Y坐标加常数，单位：km， 一般为500km</param>
-   /// <param name="N0">Y坐标前的带号</param>
-   /// <param name="X">North坐标，单位：m</param>
-   /// <param name="Y">East坐标，单位：m</param>
-   void BLtoXYKM(double B, double L, double L0,
-      double YKM, double N0,
-      out double X, out double Y,
-      out double gamma, out double m);
-
-
-   void BLtoXYKM(double B, double L, double L0,
-      double YKM, double N0,
-      out double X,
-      out double Y);
-
-
-   void xytoBl(double x, double y,
-      out double B, out double l,
-      out double gamma, out double m);
-
-   void XYKMtoBL(double X, double Y, double L0,
-      double YKM, double N0,
-      out double B, out double L,
-      out double gamma, out double m);
-
-   void XYKMtoBL(double X, double Y, double L0,
-      double YKM, double N0,
-      out double B,
-      out double L);
+    /// <summary>
+    /// 投影反算，根据North-East坐标计算经纬度
+    /// </summary>
+    /// <param name="n">North坐标，单位：m</param>
+    /// <param name="e">East坐标，单位：m</param>
+    /// <param name="lon0">中央子午线经度，单位：弧度</param>
+    /// <param name="ekm">East坐标加常数，单位：km，一般为500km</param>
+    /// <param name="zone">带号</param>
+    /// <returns>纬度，单位：弧度；经度，单位：弧度；子午线收敛角γ，单位：弧度，长度比m</returns>
+    (double lat, double lon, double gamma, double m) Inverse(double n, double e, double lon0, double ekm = 500.0, double zone = 0.0);
 }

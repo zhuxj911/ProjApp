@@ -37,7 +37,6 @@ public class Point : IPoint
         set => z = value;
     }
 
-
     public override string ToString()
     {
         return $"{Name}, {Code}, {X}, {Y}, {Z}";

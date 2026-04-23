@@ -2,86 +2,79 @@
 
 namespace ZXY;
 
+/// <summary>
+/// 椭球Ellipsoid 不依赖于 投影算法
+/// 说明椭球Ellipsoid不应该包含投影算法
+/// 投影算法依赖于椭球
+/// </summary>
 public class GaussProj : IProj
 {
     private Ellipsoid ellipsoid;
+
     public GaussProj(Ellipsoid ellipsoid)
     {
         this.ellipsoid = ellipsoid;
     }
 
-    public void Bltoxy(double B, double l,
-        out double x, out double y,
-        out double gamma, out double m)
+    internal (double n, double e, double gamma, double m) Forward(double lat, double ll)
     {
-        double sinB = Math.Sin(B);
-        double cosB = Math.Cos(B);
+        double sinB = Math.Sin(lat);
+        double cosB = Math.Cos(lat);
         double cosB2 = cosB * cosB;
         double cosB4 = cosB2 * cosB2;
 
-        double t = Math.Tan(B);
+        double t = Math.Tan(lat);
         double t2 = t * t;
         double t4 = t2 * t2;
 
         double g2 = ellipsoid.funG2(cosB2);
         double g4 = g2 * g2;
 
-        double l2 = l * l;
+        double l2 = ll * ll;
         double l4 = l2 * l2;
 
-        double X = ellipsoid.funX(B);
+        double X = ellipsoid.funX(lat);
         double N = ellipsoid.funN(sinB * sinB);
-        x = X + N * sinB * cosB * l2 * (
+
+        double n = X + N * sinB * cosB * l2 * (
             0.5
             + cosB2 / 24.0 * (5 - t2 + 9 * g2 + 4 * g4) * l2
             + cosB4 / 720.0 * (61 - 58 * t2 + t4) * l4
         );
-        y = N * cosB * l * (
+        double e = N * cosB * ll * (
             1 + cosB2 / 6.0 * (1 - t2 + g2) * l2
               + cosB4 / 120.0 * (5 - 18 * t2 + t4 + 14 * g2 - 58 * g2 * t2) * l4
         );
-        gamma = sinB * l * (
+
+        double gamma = sinB * ll * (
             1
             + (1 + 3 * g2 + 2 * g4) / 3.0 * cosB2 * l2
             + (2 - t2) / 15.0 * cosB4 * l4
         );
-        m = 1 + 0.5 * l2 * cosB2 * (1 + g2) + l4 * cosB4 * (5 - 4 * t2) / 24.0;
+        double m = 1 + 0.5 * l2 * cosB2 * (1 + g2) + l4 * cosB4 * (5 - 4 * t2) / 24.0;
+
+        return (n, e, gamma, m);
     }
 
     /// <summary>
-    /// 根据经纬度计算XY坐标（Y带加常数）
+    /// 高斯投影正算，根据经纬度投影计算North-East坐标
     /// </summary>
-    /// <param name="B">纬度，单位：弧度</param>
-    /// <param name="L">经度，单位：弧度</param>
-    /// <param name="L0">中央子午线经度，单位：弧度</param>
-    /// <param name="YKM">Y坐标加常数，单位：km， 一般为500km</param>
-    /// <param name="N0">Y坐标前的带号</param>
-    /// <param name="X">North坐标，单位：m</param>
-    /// <param name="Y">East坐标，单位：m</param>
-    public void BLtoXYKM(double B, double L, double L0,
-        double YKM, double N0,
-        out double X, out double Y,
-        out double gamma, out double m)
+    /// <param name="lat">纬度，单位：弧度</param>
+    /// <param name="lon">经度，单位：弧度</param>
+    /// <param name="lon0">中央子午线经度，单位：弧度</param>
+    /// <param name="ykm">Y坐标加常数，单位：km，一般为500km</param>
+    /// <param name="zone">带号</param>
+    /// <returns>North, East, 子午线收敛角γ，单位：弧度，长度比m </returns>
+    public (double n, double e, double gamma, double m) Forward(double lat, double lon, double lon0, double ekm = 500, double zone = 0)
     {
-        double l = L - L0;
-        Bltoxy(B, l, out X, out double y, out gamma, out m);
-        Y = y + YKM * 1000 + N0 * 1e6;
+        double l = lon - lon0;
+        var (n, e, gamma, m) = Forward(lat, l);
+        return (n,e + ekm * 1e3 + zone * 1e6, gamma, m);
     }
 
-    public void BLtoXYKM(double B, double L, double L0,
-        double YKM, double N0,
-        out double X,
-        out double Y)
+    internal (double lat, double ll, double gamma, double m) Inverse(double n, double e)
     {
-        BLtoXYKM(B, L, L0, YKM, N0, out X, out Y, out _, out _);
-    }
-
-
-    public void xytoBl(double x, double y,
-        out double B, out double l,
-        out double gamma, out double m)
-    {
-        double Bf = ellipsoid.funBf(x);
+        double Bf = ellipsoid.funBf(n);
         double tf = Math.Tan(Bf);
         double tf2 = tf * tf;
         double tf4 = tf2 * tf2;
@@ -97,49 +90,49 @@ public class GaussProj : IProj
         double cosBf = Math.Cos(Bf);
         double gf2 = ellipsoid.funG2(cosBf * cosBf);
 
-        double y2 = y * y;
+        double y2 = e * e;
         double y4 = y2 * y2;
 
-        B = Bf + tf / Mf / Nf * y2 * (
+        double lat = Bf + tf / Mf / Nf * y2 * (
             -0.5
             + y2 / 24.0 / Nf2 * (5 + 3 * tf2 + gf2 - 9 * gf2 * tf2)
             - y4 / 720.0 / Nf4 * (61 + 90 * tf2 + 45 * tf4)
         );
-        l = y / Nf / cosBf * (
+        double ll = e / Nf / cosBf * (
             1
             - y2 / 6.0 / Nf2 * (1 + 2 * tf2 + gf2)
             + y4 / 120.0 / Nf4 * (5 + 28 * tf2 + 24 * tf4 + 6 * gf2 + 8 * gf2 * tf2)
         );
-        gamma = tf / Nf * y * (
+        double gamma = tf / Nf * e * (
             1
             - (1 + tf2 - gf2) / 3.0 / Nf2 * y2
             + (2 + 5 * tf2 + 3 * tf4) / 15.0 / Nf4 * y4
         );
 
-        double sinB = Math.Sin(B);
+        double sinB = Math.Sin(lat);
         double sinB2 = sinB * sinB;
         double R = ellipsoid.funR(sinB2);
         double R2 = R * R;
         double R4 = R2 * R2;
-        m = 1 + y2 / 2.0 / R2 + y4 / 24.0 / R4;
+        double m = 1 + y2 / 2.0 / R2 + y4 / 24.0 / R4;
+
+        return (lat, ll, gamma, m);
     }
 
 
-    public void XYKMtoBL(double X, double Y, double L0,
-        double YKM, double N0,
-        out double B, out double L,
-        out double gamma, out double m)
+    /// <summary>
+    /// 高斯投影反算，根据North-East坐标计算经纬度
+    /// </summary>
+    /// <param name="n">North坐标，单位：m</param>
+    /// <param name="e">East坐标，单位：m</param>
+    /// <param name="lon0">中央子午线经度，单位：弧度</param>
+    /// <param name="ekm">East坐标加常数，单位：km，一般为500km</param>
+    /// <param name="zone">带号</param>
+    /// <returns>纬度，单位：弧度；经度，单位：弧度；子午线收敛角γ，单位：弧度，长度比m</returns>
+    public (double lat, double lon, double gamma, double m) Inverse(double n, double e, double lon0, double ekm = 500, double zone = 0)
     {
-        double y = Y - N0 * 1e6 - YKM * 1000;
-        xytoBl(X, y, out B, out double l, out gamma, out m);
-        L = l + L0;
-    }
-
-    public void XYKMtoBL(double X, double Y, double L0,
-        double YKM, double N0,
-        out double B,
-        out double L)
-    {
-        XYKMtoBL(X, Y, L0, YKM, N0, out B, out L, out _, out _);
+        double ee = e - zone * 1e6 - ekm * 1e3;
+        var (lat, ll, gamma, m) = Inverse(n, ee);
+        return (lat, lon0 + ll, gamma, m);
     }
 }

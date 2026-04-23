@@ -106,11 +106,11 @@ public partial class AzimuthViewModel : ViewModelBase
 
 
     [ObservableProperty]
-    private GPoint _A;
+    private GeoPoint _A;
 
 
     [ObservableProperty]
-    private GPoint _B;
+    private GeoPoint _B;
 
 
     [ObservableProperty] //使用源生成器生成 AzName 属性

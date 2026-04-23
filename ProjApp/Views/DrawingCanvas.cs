@@ -1,22 +1,21 @@
-﻿using ProjApp.Models;
-using System.Collections.ObjectModel;
-using System.Globalization;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Media;
+using ProjApp.Models;
 
-namespace ProjApp.Pages;
+namespace ProjApp.Views;
 
 public class DrawingCanvas : System.Windows.Controls.Canvas
 {
     //定义依赖属性，绑定绘图数据源
-    public ObservableCollection<GPoint> DrawPoints
+    public ObservableCollection<GeoPoint> DrawPoints
     {
-        get => (ObservableCollection<GPoint>)GetValue(DrawPointsProperty);
+        get => (ObservableCollection<GeoPoint>)GetValue(DrawPointsProperty);
         set => SetValue(DrawPointsProperty, value);
     }
 
     public static readonly DependencyProperty DrawPointsProperty =
-        DependencyProperty.Register("DrawPoints", typeof(ObservableCollection<GPoint>), typeof(DrawingCanvas),
+        DependencyProperty.Register("DrawPoints", typeof(ObservableCollection<GeoPoint>), typeof(DrawingCanvas),
             new PropertyMetadata(DrawPointsValueChanged));
 
     public static void DrawPointsValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

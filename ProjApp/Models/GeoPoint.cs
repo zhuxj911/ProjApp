@@ -14,7 +14,7 @@ using ZXY;
 
 namespace ProjApp.Models;
 
-public partial class GPoint : ViewModelBase, IPoint
+public partial class GeoPoint : ViewModelBase, IPoint
 {
     private ZXY.Point point = new();
 

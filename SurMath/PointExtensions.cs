@@ -2,7 +2,8 @@
 
 namespace ZXY;
 
-public interface IPoint{
+public interface IPoint
+{
     double X { get; set; }
     double Y { get; set; }
 }

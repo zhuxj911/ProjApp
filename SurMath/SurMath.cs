@@ -41,6 +41,13 @@ public static class SurMath
     }
 
     /// <summary>
+    /// 将以度为单位的角度转换为弧度
+    /// </summary>
+    /// <param name="degree">角度值</param>
+    /// <returns>弧度值</returns>
+    public static double DegreeToRadian(double degree) => degree * TORADIAN;
+
+    /// <summary>
     /// 度分秒角度值1.02305 化 度、分、秒字符串 1°02′30.5″
     /// </summary>
     /// <param name="dmsAngle">度分秒角度:1.02305</param>
@@ -79,14 +86,25 @@ public static class SurMath
     }
 
     /// <summary>
+    /// 弧度（radian）转化为 度
+    /// </summary>
+    /// <param name="radAngle">弧度角度值</param>
+    /// <returns>度</returns>
+    public static double RadianToDegree(double radAngle)
+    {
+        var (d, m, s) = Radian2Dms(radAngle);
+        return d + m / 60.0 + s / 3600.0;
+    }
+
+    /// <summary>
     /// 将弧度转换为60进制的度分秒角度
     /// </summary>
     /// <param name="radAngle">单位为弧度的角度</param>
     /// <returns>60进制的角度</returns>
     public static double RadianToDms(double radAngle)
     {
-        var dms = Radian2Dms(radAngle);
-        return dms.d + dms.m / 100.0 + dms.s / 10000.0;
+        var (d, m, s) = Radian2Dms(radAngle);
+        return d + m / 100.0 + s / 10000.0;
     }
 
     /// <summary>

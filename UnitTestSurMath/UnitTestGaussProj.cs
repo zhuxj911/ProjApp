@@ -1,6 +1,6 @@
 ﻿using ZXY;
 
-namespace UnitTestSurMath;
+namespace UnitTestGaussProj;
 
 public class UnitTestGaussProj
 {
@@ -33,17 +33,18 @@ public class UnitTestGaussProj
         //Area of use: China - onshore between 115°30'E and 118°30'E.
         //E 39448455.02271326  N 4419432.367677833
 
-        var lat = SurMath.DmsToRadian(39.5427);
-        var lon = SurMath.DmsToRadian(116.234992);
-        var lon0 = SurMath.DmsToRadian(117);
+        //【测试1】北京天安门 39.9075°, 116.3972°
+        var lat = SurMath.DmsToRadians(39.5427);
+        var lon = SurMath.DmsToRadians(116.234992);
+        var lon0 = SurMath.DmsToRadians(117);
 
         var ellipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.CGCS2000];
         IProj proj = new GaussProj(ellipsoid);
 
-        var (N, E, gamma, m) = proj.Forward(lat, lon, lon0, 500, 39);
+        var (N, E, gamma, m) = proj.Forward(lat, lon, lon0, 0, 500, 39);
         Assert.Equal(4419432.367677833, N, 1e-3);
         Assert.Equal(39448455.02271326, E, 1e-3);
-        Assert.Equal("-0°23′12.245514″", SurMath.RadianToDmsString(gamma));
+        Assert.Equal("-0°23'12.245514\"", SurMath.RadiansToDmsString(gamma));
         Assert.Equal(0.99963268166217156, m, 1e-3);
     }
 
@@ -62,17 +63,17 @@ public class UnitTestGaussProj
         //var lon = SurMath.DmsToRadian(116.234992);
         var N = 4419432.367677833;
         var E = 39448455.02271326;
-        var lon0 = SurMath.DmsToRadian(117);
+        var lon0 = SurMath.DmsToRadians(117);
 
         var ellipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.CGCS2000];
         IProj proj = new GaussProj(ellipsoid);
 
-        var (lat, lon, gamma, m) = proj.Inverse(N, E, lon0, 500, 39);
-        var tlat = SurMath.RadianToDms(lat);
-        var tlon = SurMath.RadianToDms(lon);
+        var (lat, lon, gamma, m) = proj.Inverse(N, E, lon0, 0, 500, 39);
+        var tlat = SurMath.RadiansToDms(lat);
+        var tlon = SurMath.RadiansToDms(lon);
         Assert.Equal(39.5427, tlat, 1e-4);
         Assert.Equal(116.234992, tlon, 1e-6);
-        Assert.Equal("-0°23′12.245513″", SurMath.RadianToDmsString(gamma));
+        Assert.Equal("-0°23'12.245513\"", SurMath.RadiansToDmsString(gamma));
         Assert.Equal(0.99963268166217156, m, 1e-3);
     }
 
@@ -82,13 +83,13 @@ public class UnitTestGaussProj
     {
         //B = 21 ◦ 58 ′ 47.0845 ′′ , L = 113 ◦ 25 ′ 31.4880 ′′ ，L0 = 111 ◦  
         //x = 2433586.692,y = 250547.403
-        var B = SurMath.DmsToRadian(21.58470845);
-        var l = SurMath.DmsToRadian(2.25314880);
+        var B = SurMath.DmsToRadians(21.58470845);
+        var l = SurMath.DmsToRadians(2.25314880);
 
         var ellipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.Beijing1954];
         IProj proj = new GaussProj(ellipsoid);
         
-        var (x, y, _, _) = proj.Forward(B, l, 0, 0);
+        var (x, y, _, _) = proj.Forward(B, l, 0, 0, 0, 0);
         Assert.Equal(2433586.692, x, 1e-3);
         Assert.Equal(250547.403, y, 1e-3);
     }
@@ -98,14 +99,14 @@ public class UnitTestGaussProj
     {
         //B = 21 ◦ 58 ′ 47.0845 ′′ , L = 113 ◦ 25 ′ 31.4880 ′′ ，L0 = 111 ◦ 
         //x = 2433586.692,y = 37750547.403
-        var B = SurMath.DmsToRadian(21.58470845);
-        var L = SurMath.DmsToRadian(113.25314880);
-        var L0 = SurMath.DmsToRadian(111);
+        var B = SurMath.DmsToRadians(21.58470845);
+        var L = SurMath.DmsToRadians(113.25314880);
+        var L0 = SurMath.DmsToRadians(111);
 
         var ellipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.Beijing1954];
         GaussProj proj = new GaussProj(ellipsoid);
        
-        var (x, y, _, _) = proj.Forward(B, L, L0, 500, 37);
+        var (x, y, _, _) = proj.Forward(B, L, L0, 0, 500, 37);
         Assert.Equal(2433586.692, x, 1e-3);
         Assert.Equal(37750547.403, y, 1e-3);
     }
@@ -123,10 +124,10 @@ public class UnitTestGaussProj
         GaussProj proj = new GaussProj(ellipsoid);
         //UtmProj proj = new UtmProj(ellipsoid);
 
-        var (B, l, _, _) = proj.Inverse(x, y, 0, 0);
+        var (B, l, _, _) = proj.Inverse(x, y, 0, 0, 0, 0);
 
-        Assert.Equal(21.58470845, SurMath.RadianToDms(B), 1e-8);
-        Assert.Equal(2.25314880, SurMath.RadianToDms(l), 1e-8);
+        Assert.Equal(21.58470845, SurMath.RadiansToDms(B), 1e-8);
+        Assert.Equal(2.25314880, SurMath.RadiansToDms(l), 1e-8);
     }
 
     [Fact]
@@ -135,16 +136,16 @@ public class UnitTestGaussProj
         //B = 21 ◦ 58 ′ 47.0845 ′′ , L = 113 ◦ 25 ′ 31.4880 ′′ ，L0 = 111 ◦ 
         //x = 2433586.692,y = 250547.403
         double X = 2433586.692, Y = 37750547.403;
-        var L0 = SurMath.DmsToRadian(111);
+        var L0 = SurMath.DmsToRadians(111);
 
         //var ellipsoid = new Ellipsoid(6378245, 298.3);
         var ellipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.Beijing1954];
         GaussProj proj = new GaussProj(ellipsoid);
         //UtmProj proj = new UtmProj(ellipsoid);
 
-        var (B, L, _, _) = proj.Inverse(X, Y, L0, 500.0, 37);
+        var (B, L, _, _) = proj.Inverse(X, Y, L0, 0, 500.0, 37);
 
-        Assert.Equal(21.58470845, SurMath.RadianToDms(B), 1e-8);
-        Assert.Equal(113.25314880, SurMath.RadianToDms(L), 1e-8);
+        Assert.Equal(21.58470845, SurMath.RadiansToDms(B), 1e-8);
+        Assert.Equal(113.25314880, SurMath.RadiansToDms(L), 1e-8);
     }
 }

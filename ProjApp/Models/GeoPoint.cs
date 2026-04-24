@@ -52,8 +52,8 @@ public partial class GeoPoint : ViewModelBase, IPoint
     /// </summary>
     public double B
     {
-        get => ZXY.SurMath.DmsToRadian(dmsB);
-        set => dmsB = ZXY.SurMath.RadianToDms(value);
+        get => ZXY.SurMath.DmsToRadians(dmsB);
+        set => dmsB = ZXY.SurMath.RadiansToDms(value);
     }
 
     private double _dmsL;
@@ -72,8 +72,8 @@ public partial class GeoPoint : ViewModelBase, IPoint
     /// </summary>
     public double L
     {
-        get => ZXY.SurMath.DmsToRadian(dmsL);
-        set => dmsL = ZXY.SurMath.RadianToDms(value);
+        get => ZXY.SurMath.DmsToRadians(dmsL);
+        set => dmsL = ZXY.SurMath.RadiansToDms(value);
     }
 
     /// <summary>

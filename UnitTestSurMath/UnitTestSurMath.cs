@@ -54,22 +54,22 @@ public class UnitTestSurMath
     [Fact]
     public void TestDmsToRadian()
     {
-        var r = SurMath.DmsToRadian(101.02201);
+        var r = SurMath.DmsToRadians(101.02201);
         Assert.Equal(1.76346176848151, r, 1e-14);
 
-        r = SurMath.DmsToRadian(-101.02201);
+        r = SurMath.DmsToRadians(-101.02201);
         Assert.Equal(-1.76346176848151, r, 1e-14);
 
-        r = SurMath.DmsToRadian(1.4000);
+        r = SurMath.DmsToRadians(1.4000);
         Assert.Equal(0.0290888208665722, r, 1e-14);
 
-        r = SurMath.DmsToRadian(-1.4000);
+        r = SurMath.DmsToRadians(-1.4000);
         Assert.Equal(-0.0290888208665722, r, 1e-14);
 
-        r = SurMath.DmsToRadian(1.40001);
+        r = SurMath.DmsToRadians(1.40001);
         Assert.Equal(0.02908930568025330, r, 1e-14);
 
-        r = SurMath.DmsToRadian(-1.40001);
+        r = SurMath.DmsToRadians(-1.40001);
         Assert.Equal(-0.02908930568025330, r, 1e-14);
     }
 
@@ -78,66 +78,66 @@ public class UnitTestSurMath
     public void TestDmsToDmsString()
     {
         var r = SurMath.DmsToDmsString(101.02201);
-        Assert.Equal("101°02′20.1″", r);
+        Assert.Equal("101°02'20.1\"", r);
 
         r = SurMath.DmsToDmsString(-101.02201);
-        Assert.Equal("-101°02′20.1″", r);
+        Assert.Equal("-101°02'20.1\"", r);
 
         r = SurMath.DmsToDmsString(1.40001);
-        Assert.Equal("1°40′00.1″", r);
+        Assert.Equal("1°40'00.1\"", r);
 
         r = SurMath.DmsToDmsString(-1.40001);
-        Assert.Equal("-1°40′00.1″", r);
+        Assert.Equal("-1°40'00.1\"", r);
 
         r = SurMath.DmsToDmsString(1.4000);
-        Assert.Equal("1°40′00″", r);
+        Assert.Equal("1°40'00\"", r);
 
         r = SurMath.DmsToDmsString(-1.4000);
-        Assert.Equal("-1°40′00″", r);
+        Assert.Equal("-1°40'00\"", r);
     }
 
 
     [Fact]
     public void TestRadian2Dms()
     {
-        var dms = SurMath.Radian2Dms(0.410855952558766);
+        var dms = SurMath.Radians2Dms(0.410855952558766);
         Assert.Equal<int>(23, dms.d);
         Assert.Equal<int>(32, dms.m);
         Assert.Equal(25.12345, dms.s, 1e-8);
 
 
-        dms = SurMath.Radian2Dms(-0.410855952558766);
+        dms = SurMath.Radians2Dms(-0.410855952558766);
         Assert.Equal<int>(-23, dms.d);
         Assert.Equal<int>(-32, dms.m);
         Assert.Equal(-25.12345, dms.s, 1e-8);
 
 
-        dms = SurMath.Radian2Dms(1.76346176848151);
+        dms = SurMath.Radians2Dms(1.76346176848151);
         Assert.Equal(101, dms.d);
         Assert.Equal(2, dms.m);
         Assert.Equal(20.1, dms.s, 1e-6);
 
-        dms = SurMath.Radian2Dms(-1.76346176848151);
+        dms = SurMath.Radians2Dms(-1.76346176848151);
         Assert.Equal(-101, dms.d);
         Assert.Equal(-2, dms.m);
         Assert.Equal(-20.1, dms.s, 1e-6);
 
-        dms = SurMath.Radian2Dms(0.0290888208665722);
+        dms = SurMath.Radians2Dms(0.0290888208665722);
         Assert.Equal(1, dms.d);
         Assert.Equal(40, dms.m);
         Assert.Equal(0, dms.s, 1e-6);
 
-        dms = SurMath.Radian2Dms(-0.0290888208665722);
+        dms = SurMath.Radians2Dms(-0.0290888208665722);
         Assert.Equal(-1, dms.d);
         Assert.Equal(-40, dms.m);
         Assert.Equal(0, dms.s, 1e-6);
 
-        dms = SurMath.Radian2Dms(0.0290893056802533);
+        dms = SurMath.Radians2Dms(0.0290893056802533);
         Assert.Equal(1, dms.d);
         Assert.Equal(40, dms.m);
         Assert.Equal(0.1, dms.s, 1e-6);
 
-        dms = SurMath.Radian2Dms(-0.0290893056802533);
+        dms = SurMath.Radians2Dms(-0.0290893056802533);
         Assert.Equal(-1, dms.d);
         Assert.Equal(-40, dms.m);
         Assert.Equal(-0.1, dms.s, 1e-6);
@@ -147,22 +147,22 @@ public class UnitTestSurMath
     [Fact]
     public void TestRadianToDms()
     {
-        var dms = SurMath.RadianToDms(1.76346176848151);
+        var dms = SurMath.RadiansToDms(1.76346176848151);
         Assert.Equal(101.02201, dms, 1e-10);
 
-        dms = SurMath.RadianToDms(-1.76346176848151);
+        dms = SurMath.RadiansToDms(-1.76346176848151);
         Assert.Equal(-101.02201, dms, 1e-10);
 
-        dms = SurMath.RadianToDms(0.0290888208665722);
+        dms = SurMath.RadiansToDms(0.0290888208665722);
         Assert.Equal(1.4000, dms, 1e-10);
 
-        dms = SurMath.RadianToDms(-0.0290888208665722);
+        dms = SurMath.RadiansToDms(-0.0290888208665722);
         Assert.Equal(-1.4000, dms, 1e-10);
 
-        dms = SurMath.RadianToDms(0.0290893056802533);
+        dms = SurMath.RadiansToDms(0.0290893056802533);
         Assert.Equal(1.40001, dms, 1e-10);
 
-        dms = SurMath.RadianToDms(-0.0290893056802533);
+        dms = SurMath.RadiansToDms(-0.0290893056802533);
         Assert.Equal(-1.40001, dms, 1e-10);
     }
 
@@ -170,28 +170,28 @@ public class UnitTestSurMath
     [Fact]
     public void TestDmsToRadianToDms()
     {
-        var r = SurMath.DmsToRadian(101.02201);
-        var dms = SurMath.RadianToDms(r);
+        var r = SurMath.DmsToRadians(101.02201);
+        var dms = SurMath.RadiansToDms(r);
         Assert.Equal(101.02201, dms, 1e-14);
 
-        r = SurMath.DmsToRadian(-101.02201);
-        dms = SurMath.RadianToDms(r);
+        r = SurMath.DmsToRadians(-101.02201);
+        dms = SurMath.RadiansToDms(r);
         Assert.Equal(-101.02201, dms, 1e-14);
 
-        r = SurMath.DmsToRadian(1.4000);
-        dms = SurMath.RadianToDms(r);
+        r = SurMath.DmsToRadians(1.4000);
+        dms = SurMath.RadiansToDms(r);
         Assert.Equal(1.4000, dms, 1e-14);
 
-        r = SurMath.DmsToRadian(-1.4000);
-        dms = SurMath.RadianToDms(r);
+        r = SurMath.DmsToRadians(-1.4000);
+        dms = SurMath.RadiansToDms(r);
         Assert.Equal(-1.4000, dms, 1e-14);
 
-        r = SurMath.DmsToRadian(1.40001);
-        dms = SurMath.RadianToDms(r);
+        r = SurMath.DmsToRadians(1.40001);
+        dms = SurMath.RadiansToDms(r);
         Assert.Equal(1.40001, dms, 1e-14);
 
-        r = SurMath.DmsToRadian(-1.40001);
-        dms = SurMath.RadianToDms(r);
+        r = SurMath.DmsToRadians(-1.40001);
+        dms = SurMath.RadiansToDms(r);
         Assert.Equal(-1.40001, dms, 1e-14);
     }
 
@@ -229,11 +229,11 @@ public class UnitTestSurMath
     [Fact]
     public void TestTo0_2PI()
     {
-        var r = SurMath.To0_2PI(SurMath.DmsToRadian(500.0));
-        Assert.Equal(140.0, SurMath.RadianToDms(r), 1e-10);
+        var r = SurMath.To0_2PI(SurMath.DmsToRadians(500.0));
+        Assert.Equal(140.0, SurMath.RadiansToDms(r), 1e-10);
 
-        r = SurMath.To0_2PI(SurMath.DmsToRadian(-500.0));
-        Assert.Equal(220.0, SurMath.RadianToDms(r), 1e-10);
+        r = SurMath.To0_2PI(SurMath.DmsToRadians(-500.0));
+        Assert.Equal(220.0, SurMath.RadiansToDms(r), 1e-10);
     }
 
     [Fact]

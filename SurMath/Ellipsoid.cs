@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace ZXY;
 
@@ -7,11 +8,12 @@ namespace ZXY;
 /// </summary>
 public enum EllipsoidType
 {
-    CS00 = 0,
-    Beijing1954 = 1,
-    Xian1980 = 2,
+    CGCS2000 = 0,
+    Xian1980 = 1,
+    Beijing1954 = 2,
     WGS1984 = 3,
-    CGCS2000 = 4
+    GRS80 = 4,
+    CS00 = 5
 }
 
 
@@ -36,7 +38,7 @@ public class Ellipsoid
         {
             if (value > 6371000)
             {
-                _a = value;                   
+                _a = value;
                 InitEllipsoid();
             }
         }
@@ -52,30 +54,35 @@ public class Ellipsoid
         {
             if (value > 298 && value < 299)
             {
-                _f = value;                  
+                _f = value;
                 InitEllipsoid();
             }
         }
     }
 
     private double b { get; set; }
-    private double e2 { get;  set; }
-    private double eT2 { get;  set; }
-    private double A0 { get;  set; }
-    private double A2 { get;  set; }
-    private double A4 { get;  set; }
-    private double A6 { get;  set; }
-    private double A8 { get;  set; }
-        
-       
+    private double e2 { get; set; }
+    private double eT2 { get; set; }
+    private double A0 { get; set; }
+    private double A2 { get; set; }
+    private double A4 { get; set; }
+    private double A6 { get; set; }
+    private double A8 { get; set; }
+
+
     private void InitEllipsoid()
     {
         //防御性处理，防止界面上给a与f输入值0导致程序崩溃
-        if (a <= 0 || f <= 0) return; 
+        if (a <= 0 || f <= 0) return;
 
-        b = a * (1 - 1 / f);
-        e2 = 1 - b / a * b / a;
-        eT2 = a / b * a / b - 1;
+        //b = a * (1 - 1 / f);
+        //e2 = 1 - b / a * b / a;
+        //eT2 = a / b * a / b - 1;
+
+        var ff = 1 / f;  //换个计算式 ff = 1/f
+        b = a * (1 - ff); //短半径 (m)
+        e2 = 2 * ff - ff * ff; //第一偏心率平方 e^2
+        eT2 = e2 / (1 - e2);   //第二偏心率平方 e'^2
 
         double m0 = a * (1 - e2);
         double e4 = e2 * e2;
@@ -87,7 +94,7 @@ public class Ellipsoid
         A2 = -0.5 * (0.75 * e2 + 15.0 / 16.0 * e4
                                + 525.0 / 512.0 * e6 + 2205.0 / 2048.0 * e8) * m0;
         A4 = 0.25 * (15.0 / 64.0 * e4 + 105.0 / 256.0 * e6
-                                      + 2205.0 / 4096.0 * e8) * m0; ;
+                                      + 2205.0 / 4096.0 * e8) * m0;
         A6 = -(35.0 / 512.0 * e6 + 315.0 / 2048.0 * e8) * m0 / 6.0;
         A8 = 315.0 / 16384.0 * e8 * m0 / 8.0;
     }
@@ -104,33 +111,19 @@ public class Ellipsoid
         this.f = inverse_flattening;
     }
 
-    public double funM(double sinB2)
-    {
-        return a * (1 - e2) / Math.Pow(1 - e2 * sinB2, 1.5);
-    }
-    public double funN(double sinB2)
-    {
-        return a / Math.Sqrt(1 - e2 * sinB2);
-    }
+    public double funM(double sinB2) => a * (1 - e2) / Math.Pow(1 - e2 * sinB2, 1.5); 
 
-    public double funR(double sinB2)
-    {
-        return Math.Sqrt(funM(sinB2) * funN(sinB2));
-    }
+    public double funN(double sinB2) => a / Math.Sqrt(1 - e2 * sinB2);
 
-    public double funG2(double cosB2)
-    {
-        return eT2 * cosB2;
-    }
+    public double funR(double sinB2) => Math.Sqrt(funM(sinB2) * funN(sinB2));
+   
+    public double funG2(double cosB2) => eT2 * cosB2;
 
-    public double funX(double B)
-    {
-        return A0 * B
+    public double funX(double B) => A0 * B
                + A2 * Math.Sin(2 * B)
                + A4 * Math.Sin(4 * B)
                + A6 * Math.Sin(6 * B)
                + A8 * Math.Sin(8 * B);
-    }
 
     public double funBf(double x)
     {
@@ -141,7 +134,7 @@ public class Ellipsoid
         {
             i++;
             Bi = (x - (
-                +A2 * Math.Sin(2 * B0)
+                A2 * Math.Sin(2 * B0)
                 + A4 * Math.Sin(4 * B0)
                 + A6 * Math.Sin(6 * B0)
                 + A8 * Math.Sin(8 * B0))) / A0;
@@ -149,13 +142,10 @@ public class Ellipsoid
             if (Math.Abs(Bi - B0) < 1e-10) break;
             else
                 B0 = Bi;
-        };
+        }
 
         return Bi;
-    }        
-
-    public override string ToString()
-    {
-        return $"{Name}";
     }
+
+    public override string ToString() => $"{Name}"; 
 }

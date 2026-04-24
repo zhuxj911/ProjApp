@@ -13,13 +13,32 @@ namespace ProjApp.ViewModels;
 public partial class ProjViewModel : ViewModelBase
 {
     public List<Ellipsoid> EllipsoidList => EllipsoidFactory.EllipsoidList;
+    public List<IProj> ProjList => EllipsoidFactory.ProjList;
 
     private Ellipsoid currentEllipsoid = EllipsoidFactory.EllipsoidList[0];
-
     public Ellipsoid CurrentEllipsoid
     {
         get => currentEllipsoid;
-        set => SetProperty(ref currentEllipsoid, value);
+        set
+        {
+            SetProperty(ref currentEllipsoid, value);
+            Proj.ResetProj(currentEllipsoid);
+        }
+    }
+
+    private IProj _proj = EllipsoidFactory.ProjList[0];
+    public IProj Proj
+    {
+        get => _proj;
+        set
+        {
+            if (value != null)
+            {
+                _proj = value;
+                _proj.ResetProj(CurrentEllipsoid);
+                OnPropertyChanged(nameof(Proj));
+            }
+        }
     }
 
     /// <summary>
@@ -41,8 +60,8 @@ public partial class ProjViewModel : ViewModelBase
     /// </summary>
     public double L0
     {
-        get => ZXY.SurMath.DmsToRadian(dmsL0);
-        set => dmsL0 = ZXY.SurMath.RadianToDms(value);
+        get => ZXY.SurMath.DmsToRadians(dmsL0);
+        set => dmsL0 = ZXY.SurMath.RadiansToDms(value);
     }
 
     private int _N = 0;
@@ -61,6 +80,15 @@ public partial class ProjViewModel : ViewModelBase
         set => SetProperty(ref _ykm, value);
     }
 
+    private double _xkm = 0;
+    public double XKM
+    {
+        get => _xkm;
+        set => SetProperty(ref _xkm, value);
+    }
+
+
+
     private ObservableCollection<GeoPoint> pointList = new ObservableCollection<GeoPoint>();
     public ObservableCollection<GeoPoint> PointList => pointList;
 
@@ -68,24 +96,17 @@ public partial class ProjViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(Title))]
     private string fileName = "untitle";
 
-    //public string FileName
-    //{
-    //    get => fileName;
-    //    set => SetProperty(ref fileName, value);
-    //}
-
-    public string Title => $"测量螺丝刀(Ver2020)-{FileName}";
+    public string Title => $"测量螺丝刀(Ver2026)-{FileName}";
 
     [RelayCommand] //启用和禁用命令
     public void BLtoXY()
     {
-        IProj proj = new GaussProj(CurrentEllipsoid);
         foreach (var pnt in this.PointList)
         {
-            var (n, e, gamma, m) = proj.Forward(pnt.B, pnt.L, L0, YKM, N);
+            var (n, e, gamma, m) = Proj.Forward(pnt.B, pnt.L, L0, XKM, YKM, N);
             pnt.X = n;
             pnt.Y = e;
-            pnt.Gamma = ZXY.SurMath.RadianToDmsString(gamma);
+            pnt.Gamma = ZXY.SurMath.RadiansToDmsString(gamma);
             pnt.M = m;
         }
     }
@@ -93,13 +114,12 @@ public partial class ProjViewModel : ViewModelBase
     [RelayCommand] //启用和禁用命令
     public void XYtoBL()
     {
-        IProj proj = new GaussProj(CurrentEllipsoid);
         foreach (var pnt in this.PointList)
         {
-            var (lat, lon, gamma, m) = proj.Inverse(pnt.X, pnt.Y, L0, YKM, N);
+            var (lat, lon, gamma, m) = Proj.Inverse(pnt.X, pnt.Y, L0, XKM, YKM, N);
             pnt.B = lat;
             pnt.L = lon;
-            pnt.Gamma = ZXY.SurMath.RadianToDmsString(gamma);
+            pnt.Gamma = ZXY.SurMath.RadiansToDmsString(gamma);
             pnt.M = m;
         }
     }
@@ -125,6 +145,7 @@ public partial class ProjViewModel : ViewModelBase
     [RelayCommand]
     public void NewFile()
     {
+        FileName = "untitle";
         CurrentEllipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.CGCS2000];
         dmsL0 = 0;
         YKM = 0;
@@ -192,8 +213,16 @@ public partial class ProjViewModel : ViewModelBase
                             YKM = double.Parse(items[1]);
                             break;
 
+                        case "XKM":
+                            XKM = double.Parse(items[1]);
+                            break;
+
                         case "N":
                             N = int.Parse(items[1]);
+                            break;
+                        case "PROJ":                            
+                            Proj = EllipsoidFactory.IdProjs[items[1].Trim()]; //如果没有输错的话，此时items[1].Trim()的值为GaussProj or UTMProj
+                            Proj.ResetProj(CurrentEllipsoid);
                             break;
 
                         default:
@@ -249,11 +278,12 @@ public partial class ProjViewModel : ViewModelBase
             sr.WriteLine("#数据文件中的 # : , 均应为英文字符");
             sr.WriteLine("#可以忽略0个空格的行");
             sr.WriteLine("#可以忽略有多个空格的行");
-            sr.WriteLine("#CS 指定坐标系 Beijing1954 Xian1980 CGCS2000 WGS1984 CS00");
+            sr.WriteLine("#CS 指定坐标系 Beijing1954 Xian1980 CGCS2000 WGS1984 GRS80 CS00");
             sr.WriteLine("#CS: Beijing1954");
             sr.WriteLine("#CS: Xian1980");
             sr.WriteLine("#CS: WGS1984");
             sr.WriteLine("#CS: CGCS2000");
+            sr.WriteLine("#CS: GRS80");
             sr.WriteLine("#CS: CS00, 6378137, 298.257222101");
             if (CurrentEllipsoid.Id.ToString() == "CS00")
             {
@@ -263,30 +293,24 @@ public partial class ProjViewModel : ViewModelBase
             {
                 sr.WriteLine($"CS: {CurrentEllipsoid.Id.ToString()}");
             }
+            sr.WriteLine("#PROJ 指定投影类型: 高斯投影 -> GaussProj   UTM投影 -> UTMProj");
+            sr.WriteLine($"PROJ: {Proj.Id}");
+
             sr.WriteLine("#角度数据格式为D.MMSS");
             sr.WriteLine($"L0: {dmsL0}");
             sr.WriteLine($"YKM: {YKM}");
+            sr.WriteLine($"XKM: {XKM}");
             sr.WriteLine($"N: {N}");
             sr.WriteLine("#角度的单位，默认为 D.MMSS");
             sr.WriteLine("#ANGLE : DEGREE D.MMSSS RADIAN");
             sr.WriteLine("ANGLE: D.MMSSS");
 
-            sr.WriteLine("#点名, B, L, X, Y, 子午线收敛角(γ),长度比(m)");
+            sr.WriteLine("#点名, north, east, latitude, longitude, γ, m");
             foreach (var pnt in PointList)
             {
                 sr.WriteLine(pnt);
             }
             sr.Close();
         }
-    }
-
-    /// <summary>
-    /// 显示坐标方位角计算窗体
-    /// </summary>
-    [RelayCommand]
-    public void ShowAzimuthWindow()
-    {
-        //AzimuthWin dlg = new AzimuthWin();
-        //dlg.ShowDialog();
     }
 }

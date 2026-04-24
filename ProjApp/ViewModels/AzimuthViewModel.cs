@@ -153,7 +153,7 @@ public partial class AzimuthViewModel : ViewModelBase
     {
         // var ad = ZXY.SurMath.Azimuth(A.X, A.Y, B.X, B.Y);
         var ad = A.Azimuth(B); //使用接口扩展
-        AzValue = ZXY.SurMath.RadianToDmsString(ad.a); 
+        AzValue = ZXY.SurMath.RadiansToDmsString(ad.a); 
         Dist = ad.d;
         AzName = $"{A.Name} -> {B.Name} 坐标方位角";
     }

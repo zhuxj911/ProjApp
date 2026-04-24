@@ -5,7 +5,7 @@
         xmlns:local="clr-namespace:ProjApp.Views"
         xmlns:vm="clr-namespace:ProjApp.ViewModels"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        Title="通用高斯投影程序 2025@" Width="800" Height="450"
+        Title="{Binding Title}" Width="800" Height="450"
         mc:Ignorable="d">
     <Window.Resources>
         <Style TargetType="TextBlock">
@@ -43,7 +43,7 @@
                 <MenuItem Command="{Binding ClearXYCommand}" Header="清除X，Y" />
             </MenuItem>
 
-            <MenuItem Header="高斯投影">
+            <MenuItem Header="投影">
                 <MenuItem Command="{Binding BLtoXYCommand}" Header="正算" />
                 <MenuItem Command="{Binding XYtoBLCommand}" Header="反算" />
             </MenuItem>
@@ -104,23 +104,38 @@
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="100*" />
+                        <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="100*" />
+                        <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="110*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Label Content="中央子午线经度(L0)=" />
-                    <TextBox Grid.Column="1" Text="{Binding dmsL0}" />
-                    <Label Grid.Column="2" Content="Y坐标加常数:" />
-                    <TextBox Grid.Column="3" Text="{Binding YKM}" />
-                    <Label Grid.Column="4" Content="KM" />
-                    <Label Grid.Column="5" Content="带号:" />
-                    <TextBox Grid.Column="6" Text="{Binding N}" />
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Label Content="投影方式" HorizontalContentAlignment="Right"/>
+                    <ComboBox ItemsSource="{Binding ProjList}" SelectedIndex="0" SelectedItem="{Binding Proj}"  Grid.Column="1"/>
+
+                    <Label Content="中央子午线经度(L0)="  Grid.Column="2"/>
+                    <TextBox Grid.Column="3" Text="{Binding dmsL0}" />
+
+                    <Label Grid.Column="4" Content="带号:" />
+                    <TextBox Grid.Column="5" Grid.ColumnSpan="3" Text="{Binding N}" />
+
+                    <Label Grid.Column="0" Grid.Row="1" Content="Y-East坐标加常数:" />
+                    <TextBox Grid.Column="1" Grid.Row="1"  Text="{Binding YKM}" />
+                    <Label Grid.Column="2" Grid.Row="1" Content="KM" />
+                    
+                    <Label Grid.Column="3" Grid.Row="1" Content="X-North坐标加常数:" />
+                    <TextBox Grid.Column="4" Grid.ColumnSpan="3" Grid.Row="1"  Text="{Binding XKM}" />
+                    <Label Grid.Column="7" Grid.Row="1" Content="KM" />
+                   
                 </Grid>
             </GroupBox>
-
+ 
             <Border
                 Grid.Row="2"
                 Margin="3"

@@ -9,9 +9,20 @@ namespace ZXY;
 /// </summary>
 public class GaussProj : IProj
 {
+    public string Id { get; } = "GaussProj";
+    public string Name { get; } = "高斯-克吕格投影";
+
+    override public string ToString() => Name;
+
     private Ellipsoid ellipsoid;
 
     public GaussProj(Ellipsoid ellipsoid)
+    {
+        //this.ellipsoid = ellipsoid;
+        ResetProj(ellipsoid);
+    }
+
+    public void ResetProj(Ellipsoid ellipsoid)
     {
         this.ellipsoid = ellipsoid;
     }
@@ -55,24 +66,26 @@ public class GaussProj : IProj
 
         return (n, e, gamma, m);
     }
-
+        
     /// <summary>
-    /// 高斯投影正算，根据经纬度投影计算North-East坐标
+    ///  高斯投影正算，根据经纬度投影计算North-East坐标
     /// </summary>
-    /// <param name="lat">纬度，单位：弧度</param>
-    /// <param name="lon">经度，单位：弧度</param>
-    /// <param name="lon0">中央子午线经度，单位：弧度</param>
-    /// <param name="ykm">Y坐标加常数，单位：km，一般为500km</param>
+    /// <param name="latitude">纬度，单位：弧度</param>
+    /// <param name="longitude">经度，单位：弧度</param>
+    /// <param name="centralMeridianLongitude">中央子午线经度，单位：弧度</param>
+    /// <param name="falseNorth">North坐标加常数，单位：km，高斯投影一般为0km</param>
+    /// <param name="falseEast">East坐标加常数，  单位：km，一般为500km</param>
     /// <param name="zone">带号</param>
     /// <returns>North, East, 子午线收敛角γ，单位：弧度，长度比m </returns>
-    public (double n, double e, double gamma, double m) Forward(double lat, double lon, double lon0, double ekm = 500, double zone = 0)
+    public (double north, double east, double gamma, double m) Forward(double latitude, double longitude, double centralMeridianLongitude, 
+        double falseNorth = 0.0, double falseEast = 500.0, double zone = 0.0)
     {
-        double l = lon - lon0;
-        var (n, e, gamma, m) = Forward(lat, l);
-        return (n,e + ekm * 1e3 + zone * 1e6, gamma, m);
+        double dl = longitude - centralMeridianLongitude;
+        var (north, east, gamma, m) = Forward(latitude, dl);
+        return (north + falseNorth * 1e3, east + falseEast * 1e3 + zone * 1e6, gamma, m);
     }
 
-    internal (double lat, double ll, double gamma, double m) Inverse(double n, double e)
+    internal (double lat, double dl, double gamma, double m) Inverse(double n, double e)
     {
         double Bf = ellipsoid.funBf(n);
         double tf = Math.Tan(Bf);
@@ -98,7 +111,7 @@ public class GaussProj : IProj
             + y2 / 24.0 / Nf2 * (5 + 3 * tf2 + gf2 - 9 * gf2 * tf2)
             - y4 / 720.0 / Nf4 * (61 + 90 * tf2 + 45 * tf4)
         );
-        double ll = e / Nf / cosBf * (
+        double dl = e / Nf / cosBf * (
             1
             - y2 / 6.0 / Nf2 * (1 + 2 * tf2 + gf2)
             + y4 / 120.0 / Nf4 * (5 + 28 * tf2 + 24 * tf4 + 6 * gf2 + 8 * gf2 * tf2)
@@ -116,23 +129,25 @@ public class GaussProj : IProj
         double R4 = R2 * R2;
         double m = 1 + y2 / 2.0 / R2 + y4 / 24.0 / R4;
 
-        return (lat, ll, gamma, m);
+        return (lat, dl, gamma, m);
     }
 
-
+        
     /// <summary>
     /// 高斯投影反算，根据North-East坐标计算经纬度
     /// </summary>
-    /// <param name="n">North坐标，单位：m</param>
-    /// <param name="e">East坐标，单位：m</param>
-    /// <param name="lon0">中央子午线经度，单位：弧度</param>
-    /// <param name="ekm">East坐标加常数，单位：km，一般为500km</param>
+    /// <param name="north">North坐标，单位：m</param>
+    /// <param name="east">East坐标，单位：m</param>
+    /// <param name="centralMeridianLongitude">中央子午线经度，单位：弧度</param>
+    /// <param name="falseNorth">North坐标加常数，单位：km，高斯投影一般为0km</param>
+    /// <param name="falseEast">East坐标加常数，单位：km，一般为500km</param>
     /// <param name="zone">带号</param>
     /// <returns>纬度，单位：弧度；经度，单位：弧度；子午线收敛角γ，单位：弧度，长度比m</returns>
-    public (double lat, double lon, double gamma, double m) Inverse(double n, double e, double lon0, double ekm = 500, double zone = 0)
+    public (double latitude, double longitude, double gamma, double m) Inverse(double north, double east, double centralMeridianLongitude, 
+        double falseNorth = 0.0, double falseEast = 500.0, double zone = 0.0)
     {
-        double ee = e - zone * 1e6 - ekm * 1e3;
-        var (lat, ll, gamma, m) = Inverse(n, ee);
-        return (lat, lon0 + ll, gamma, m);
+        double ee = east - zone * 1e6 - falseEast * 1e3;
+        var (latitude, dl, gamma, m) = Inverse(north, ee);
+        return (latitude, centralMeridianLongitude + dl, gamma, m);
     }
 }

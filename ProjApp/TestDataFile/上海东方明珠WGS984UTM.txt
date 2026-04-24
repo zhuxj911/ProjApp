@@ -1,0 +1,22 @@
+#数据文件中的 # : , 均应为英文字符
+#可以忽略0个空格的行
+#可以忽略有多个空格的行
+#CS 指定坐标系 Beijing1954 Xian1980 CGCS2000 WGS1984 GRS80 CS00
+#CS: Beijing1954
+#CS: Xian1980
+#CS: WGS1984
+#CS: CGCS2000
+#CS: GRS80
+#CS: CS00, 6378137, 298.257222101
+CS: WGS1984
+#PROJ 指定投影类型: 高斯投影 -> GaussProj   UTM投影 -> UTMProj
+PROJ: UTMProj
+#角度数据格式为D.MMSS
+L0: 123
+YKM: 500
+N: 0
+#角度的单位，默认为 D.MMSS
+#ANGLE : DEGREE D.MMSSS RADIAN
+ANGLE: D.MMSSS
+#点名, latitude, longitude, north, east, γ, m
+上海东方明珠, -3749051.6546139196, 334368.6336466527, 31.142292, 121.300612, 0°59'53.418677", 0.999938200415427

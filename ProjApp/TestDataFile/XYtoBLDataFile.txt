@@ -10,6 +10,8 @@ CS: Beijing1954
 L0: 111
 YKM: 500
 N: 19
+PROJ: GaussProj
+
 #数据文件格式：
 #点名, X, Y, B, L, Gamma, m
 #点名, X, Y 为必选项，即使为0，也应写出

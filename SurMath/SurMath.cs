@@ -7,7 +7,7 @@ public static class SurMath
     public const double PI = Math.PI;
     public const double TWOPI = 2 * Math.PI;
     public const double HALFPI = 0.5 * Math.PI;
-    public const double TORADIAN = PI / 180.0;
+    public const double TORADIANS = PI / 180.0;
     public const double TODEGREE = 180.0 / PI;
     public const double TOSECOND = 180.0 * 3600.0 / PI;
 
@@ -34,10 +34,10 @@ public static class SurMath
     /// </summary>
     /// <param name="dmsAngle">形如ddd.mmss的60进制的角度</param>
     /// <returns>弧度值</returns>
-    public static double DmsToRadian(double dmsAngle)
+    public static double DmsToRadians(double dmsAngle)
     {
         var dms = DmsToDms(dmsAngle);
-        return (dms.d + dms.m / 60.0 + dms.s / 3600.0) * TORADIAN;
+        return (dms.d + dms.m / 60.0 + dms.s / 3600.0) * TORADIANS;
     }
 
     /// <summary>
@@ -45,22 +45,22 @@ public static class SurMath
     /// </summary>
     /// <param name="degree">角度值</param>
     /// <returns>弧度值</returns>
-    public static double DegreeToRadian(double degree) => degree * TORADIAN;
+    public static double DegreeToRadians(double degree) => degree * TORADIANS;
 
     /// <summary>
-    /// 度分秒角度值1.02305 化 度、分、秒字符串 1°02′30.5″
+    /// 度分秒角度值1.02305 化 度、分、秒字符串 1°02'30.5"
     /// </summary>
     /// <param name="dmsAngle">度分秒角度:1.02305</param>
-    /// <returns>度、分、秒字符串 1°02′30.5″</returns>
+    /// <returns>度、分、秒字符串 1°02'30.5"</returns>
     public static string DmsToDmsString(double dmsAngle)
     {
         int f = dmsAngle >= 0 ? 1 : -1;
         string ff = dmsAngle >= 0 ? "" : "-";
         var dms = DmsToDms(dmsAngle);
         if (Math.Abs(dms.s) < 1e-10)
-            return $"{ff}{f * dms.d}°{f * dms.m:00}′{0:00.######}″";
+            return $"{ff}{f * dms.d}°{f * dms.m:00}'{0:00.######}\"";
         else
-            return $"{ff}{f * dms.d}°{f * dms.m:00}′{f * dms.s:00.######}″";
+            return $"{ff}{f * dms.d}°{f * dms.m:00}'{f * dms.s:00.######}\"";
     }
 
     /// <summary>
@@ -68,7 +68,7 @@ public static class SurMath
     /// </summary>
     /// <param name="radAngle">弧度角度值</param>
     /// <returns>度分秒角度:1.2030</returns>
-    public static (int d, int m, double s) Radian2Dms(double radAngle)
+    public static (int d, int m, double s) Radians2Dms(double radAngle)
     {
         // radAngle *= TOSECOND;
         // int angle = (int)radAngle;
@@ -86,13 +86,13 @@ public static class SurMath
     }
 
     /// <summary>
-    /// 弧度（radian）转化为 度
+    /// 弧度（radians）转化为 度
     /// </summary>
     /// <param name="radAngle">弧度角度值</param>
     /// <returns>度</returns>
-    public static double RadianToDegree(double radAngle)
+    public static double RadiansToDegree(double radAngle)
     {
-        var (d, m, s) = Radian2Dms(radAngle);
+        var (d, m, s) = Radians2Dms(radAngle);
         return d + m / 60.0 + s / 3600.0;
     }
 
@@ -101,20 +101,20 @@ public static class SurMath
     /// </summary>
     /// <param name="radAngle">单位为弧度的角度</param>
     /// <returns>60进制的角度</returns>
-    public static double RadianToDms(double radAngle)
+    public static double RadiansToDms(double radAngle)
     {
-        var (d, m, s) = Radian2Dms(radAngle);
+        var (d, m, s) = Radians2Dms(radAngle);
         return d + m / 100.0 + s / 10000.0;
     }
 
     /// <summary>
-    /// 弧度（radian）化 度、分、秒字符串 1°02′30.5″
+    /// 弧度（radian）化 度、分、秒字符串 1°02'30.5"
     /// </summary>
     /// <param name="radAngle">弧度角度值</param>
-    /// <returns>度、分、秒字符串 1°02′30.5″</returns>
-    public static string RadianToDmsString(double radAngle)
+    /// <returns>度、分、秒字符串 1°02'30.5"</returns>
+    public static string RadiansToDmsString(double radAngle)
     {
-        var dms = RadianToDms(radAngle);
+        var dms = RadiansToDms(radAngle);
         return DmsToDmsString(dms);
     }
 

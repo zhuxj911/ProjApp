@@ -96,9 +96,9 @@ public class DrawingCanvas : System.Windows.Controls.Canvas
 
         foreach (var pt in DrawPoints)
         {
-            if (pt.X <= 0 || pt.Y <= 0) continue; //排除坐标为0的点
+            if (pt.N <= 0 || pt.E <= 0) continue; //排除坐标为0的点
 
-            GaussXyToViewXy(pt.X, pt.Y, out double x0, out double y0);
+            GaussXyToViewXy(pt.N, pt.E, out double x0, out double y0);
             DrawCtrPnt(dc, x0, y0, Brushes.Red, 1);
             DrawText(dc, pt.Name, x0 + 10, y0 - 7);
         }
@@ -116,18 +116,18 @@ public class DrawingCanvas : System.Windows.Controls.Canvas
 
     private void GetGaussXySize()
     {
-        minX = DrawPoints[0].X; minY = DrawPoints[0].Y;
-        maxX = DrawPoints[0].X; maxY = DrawPoints[0].Y;
+        minX = DrawPoints[0].N; minY = DrawPoints[0].E;
+        maxX = DrawPoints[0].N; maxY = DrawPoints[0].E;
 
         for (int i = 1; i < DrawPoints.Count; i++) //如果只有一个点，由循环条件知，不会执行循环体
         {
-            if (DrawPoints[i].X <= 0 || DrawPoints[i].Y <= 0) continue;
+            if (DrawPoints[i].N <= 0 || DrawPoints[i].E <= 0) continue;
 
-            if (DrawPoints[i].X < minX) minX = DrawPoints[i].X;
-            if (DrawPoints[i].Y < minY) minY = DrawPoints[i].Y;
+            if (DrawPoints[i].N < minX) minX = DrawPoints[i].N;
+            if (DrawPoints[i].E < minY) minY = DrawPoints[i].E;
 
-            if (DrawPoints[i].X > maxX) maxX = DrawPoints[i].X;
-            if (DrawPoints[i].Y > maxY) maxY = DrawPoints[i].Y;
+            if (DrawPoints[i].N > maxX) maxX = DrawPoints[i].N;
+            if (DrawPoints[i].E > maxY) maxY = DrawPoints[i].E;
         }
 
         //针对一个点或点范围较小的情况，进行范围扩展

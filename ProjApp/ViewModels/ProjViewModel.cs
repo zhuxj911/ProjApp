@@ -72,21 +72,20 @@ public partial class ProjViewModel : ViewModelBase
         set => SetProperty(ref _N, value);
     }
 
-    private double _ykm = 0;
+    private double _falseEast = 0;
 
-    public double YKM
+    public double FalseEast
     {
-        get => _ykm;
-        set => SetProperty(ref _ykm, value);
+        get => _falseEast;
+        set => SetProperty(ref _falseEast, value);
     }
 
-    private double _xkm = 0;
-    public double XKM
+    private double _falseNorth = 0;
+    public double FalseNorth
     {
-        get => _xkm;
-        set => SetProperty(ref _xkm, value);
+        get => _falseNorth;
+        set => SetProperty(ref _falseNorth, value);
     }
-
 
 
     private ObservableCollection<GeoPoint> pointList = new ObservableCollection<GeoPoint>();
@@ -98,33 +97,61 @@ public partial class ProjViewModel : ViewModelBase
 
     public string Title => $"测量螺丝刀(Ver2026)-{FileName}";
 
-    [RelayCommand] //启用和禁用命令
-    public void BLtoXY()
+    [RelayCommand]
+    public void BLtoNE()
     {
         foreach (var pnt in this.PointList)
         {
-            var (n, e, gamma, m) = Proj.Forward(pnt.B, pnt.L, L0, XKM, YKM, N);
-            pnt.X = n;
-            pnt.Y = e;
-            pnt.Gamma = ZXY.SurMath.RadiansToDmsString(gamma);
+            var (n, e, gamma, m) = Proj.Forward(pnt.B, pnt.L, L0, FalseEast, N, FalseNorth);
+            pnt.N = n;
+            pnt.E = e;
+            pnt.Gamma =  gamma;
+            //pnt.GammaDmsString = ZXY.SurMath.RadiansToDmsString(gamma);
             pnt.M = m;
         }
     }
 
-    [RelayCommand] //启用和禁用命令
-    public void XYtoBL()
+    [RelayCommand]
+    public void NEtoBL()
     {
         foreach (var pnt in this.PointList)
         {
-            var (lat, lon, gamma, m) = Proj.Inverse(pnt.X, pnt.Y, L0, XKM, YKM, N);
+            var (lat, lon, gamma, m) = Proj.Inverse(pnt.N, pnt.E, L0, FalseEast, N, FalseNorth);
             pnt.B = lat;
             pnt.L = lon;
-            pnt.Gamma = ZXY.SurMath.RadiansToDmsString(gamma);
+            pnt.Gamma = gamma;
+            //pnt.GammaDmsString = ZXY.SurMath.RadiansToDmsString(gamma);
             pnt.M = m;
         }
     }
 
-    [RelayCommand] //启用和禁用命令
+
+    [RelayCommand]
+    public void BLHtoXYZ()
+    {
+        foreach (var pnt in this.PointList)
+        {
+            var (X, Y, Z) = CurrentEllipsoid.BLHtoXYZ(pnt.B, pnt.L, pnt.H);
+            pnt.X = X;
+            pnt.Y = Y;
+            pnt.Z = Z;
+        }
+    }
+
+    [RelayCommand]
+    public void XYZtoBLH()
+    {
+        foreach (var pnt in this.PointList)
+        {
+            var (B, L, H) = CurrentEllipsoid.XYZtoBLH(pnt.X, pnt.Y, pnt.Z);
+            pnt.B = B;
+            pnt.L = L;
+            pnt.H = H;
+        }
+    }
+
+
+    [RelayCommand]
     public void ClearBL()
     {
         foreach (var pnt in this.PointList)
@@ -133,12 +160,21 @@ public partial class ProjViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand] //启用和禁用命令
-    public void ClearXY()
+    [RelayCommand]
+    public void ClearNE()
     {
         foreach (var pnt in this.PointList)
         {
-            pnt.X = pnt.Y = 0;
+            pnt.N = pnt.E = 0;
+        }
+    }
+
+    [RelayCommand]
+    public void ClearXYZ()
+    {
+        foreach (var pnt in this.PointList)
+        {
+            pnt.X = pnt.Y = pnt.Z = 0.0;
         }
     }
 
@@ -148,7 +184,7 @@ public partial class ProjViewModel : ViewModelBase
         FileName = "untitle";
         CurrentEllipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.CGCS2000];
         dmsL0 = 0;
-        YKM = 0;
+        FalseEast = 0;
         N = 0;
         PointList.Clear();
     }
@@ -210,11 +246,11 @@ public partial class ProjViewModel : ViewModelBase
                             break;
 
                         case "YKM":
-                            YKM = double.Parse(items[1]);
+                            FalseEast = double.Parse(items[1]);
                             break;
 
                         case "XKM":
-                            XKM = double.Parse(items[1]);
+                            FalseNorth = double.Parse(items[1]);
                             break;
 
                         case "N":
@@ -235,14 +271,14 @@ public partial class ProjViewModel : ViewModelBase
                 if (items.Length < 3) continue; //少于三项数据，不是点的坐标数据，忽略
                 GeoPoint pnt = new GeoPoint();
                 pnt.Name = items[0].Trim();
-                pnt.X = double.Parse(items[1]);
-                pnt.Y = double.Parse(items[2]);
+                pnt.N = double.Parse(items[1]);
+                pnt.E = double.Parse(items[2]);
 
                 if (items.Length >= 5)
                 {
                     //默认为 D.MMSS
-                    pnt.dmsB = double.Parse(items[3]);
-                    pnt.dmsL = double.Parse(items[4]);
+                    pnt.DmsB = double.Parse(items[3]);
+                    pnt.DmsL = double.Parse(items[4]);
                 }
                 this.PointList.Add(pnt);
             }
@@ -298,14 +334,14 @@ public partial class ProjViewModel : ViewModelBase
 
             sr.WriteLine("#角度数据格式为D.MMSS");
             sr.WriteLine($"L0: {dmsL0}");
-            sr.WriteLine($"YKM: {YKM}");
-            sr.WriteLine($"XKM: {XKM}");
+            sr.WriteLine($"YKM: {FalseEast}");
+            sr.WriteLine($"XKM: {FalseNorth}");
             sr.WriteLine($"N: {N}");
             sr.WriteLine("#角度的单位，默认为 D.MMSS");
             sr.WriteLine("#ANGLE : DEGREE D.MMSSS RADIAN");
             sr.WriteLine("ANGLE: D.MMSSS");
 
-            sr.WriteLine("#点名, north, east, latitude, longitude, γ, m");
+            sr.WriteLine("#点名, N(m), E(m), B(D.MMSS), L(D.MMSS), H(m), M, γ(D.MMSS), X(m), Y(m), Z(m)");
             foreach (var pnt in PointList)
             {
                 sr.WriteLine(pnt);

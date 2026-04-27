@@ -16,15 +16,15 @@ public partial class AzimuthViewModel : ViewModelBase
         A = new()
         {
             Name = "GP11",
-            X = 50342.464,
-            Y = 3528.978
+            N = 50342.464,
+            E = 3528.978
         };
 
         B = new()
         {
             Name = "GP12",
-            X = 50289.874,
-            Y = 3423.232
+            N = 50289.874,
+            E = 3423.232
         };
 #endif
         A.PropertyChanged += OnPointPropertyChanged;
@@ -134,7 +134,7 @@ public partial class AzimuthViewModel : ViewModelBase
     /// <summary>
     /// 控制计算按钮是否可用
     /// </summary>  
-    public bool CanCalculate => Math.Abs(A.X - B.X) >= 0.1 || Math.Abs(A.Y - B.Y) >= 0.1;
+    public bool CanCalculate => Math.Abs(A.N - B.N) >= 0.1 || Math.Abs(A.E - B.E) >= 0.1;
 
 
 

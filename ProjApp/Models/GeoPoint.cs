@@ -16,79 +16,92 @@ namespace ProjApp.Models;
 
 public partial class GeoPoint : ViewModelBase, IPoint
 {
-    private ZXY.Point point = new();
+    [ObservableProperty]
+    private string name;
+    
+    /// <summary>
+    /// 投影坐标系中的北坐标
+    /// </summary>   
+    [ObservableProperty]
+    private double _N;
 
-    public string Name
-    {
-        get => point.Name;
-        set => SetProperty(point.Name, value, point, (pt, n) => pt.Name = n);
-    }
-
-    public double X
-    {
-        get => point.X;
-        set => SetProperty(point.X, value, point, (pt, x) => pt.X = x);
-    }
-
-    public double Y
-    {
-        get => point.Y;
-        set => SetProperty(point.Y, value, point, (pt, y) => pt.Y = y);
-    }
-
-    private double _dmsB;
+    /// <summary>
+    /// 投影坐标系中的东坐标
+    /// </summary>   
+    [ObservableProperty]
+    private double _E;
 
     /// <summary>
     /// 纬度，单位为度分秒
     /// </summary>
-    public double dmsB
-    {
-        get => _dmsB;
-        set => SetProperty(ref _dmsB, value);
-    }
+    [ObservableProperty]
+    private double dmsB;
+
 
     /// <summary>
     /// 纬度，单位为弧度
     /// </summary>
     public double B
     {
-        get => ZXY.SurMath.DmsToRadians(dmsB);
-        set => dmsB = ZXY.SurMath.RadiansToDms(value);
+        get => ZXY.SurMath.DmsToRadians(DmsB);
+        set => DmsB = ZXY.SurMath.RadiansToDms(value);
     }
 
-    private double _dmsL;
-
+    
     /// <summary>
     /// 经度，单位为度分秒
     /// </summary>
-    public double dmsL
-    {
-        get => _dmsL;
-        set => SetProperty(ref _dmsL, value);
-    }
+    [ObservableProperty]
+    private double dmsL;
 
     /// <summary>
     /// 经度，单位为弧度
     /// </summary>
     public double L
     {
-        get => ZXY.SurMath.DmsToRadians(dmsL);
-        set => dmsL = ZXY.SurMath.RadiansToDms(value);
+        get => ZXY.SurMath.DmsToRadians(DmsL);
+        set => DmsL = ZXY.SurMath.RadiansToDms(value);
     }
 
     /// <summary>
-    /// 度分秒的字符串
+    /// 大地高
     /// </summary>
-    [ObservableProperty] //使用源生成器生成 Gamma 属性
-    private string gamma;
+    [ObservableProperty]
+    private double _H = 0.0;
 
+    /// <summary>
+    /// 子午线收敛角，单位：弧度
+    /// </summary>
+    [ObservableProperty]
+    private double gamma;
 
-    [ObservableProperty] //使用源生成器生成 M 属性
+    public string GammaDmsString => ZXY.SurMath.RadiansToDmsString(Gamma);
+
+    public double GammaDms => ZXY.SurMath.RadiansToDms(Gamma);
+
+    [ObservableProperty]
     private double m;
 
+    /// <summary>
+    /// 空间直角坐标 X
+    /// </summary>
+    [ObservableProperty]
+    private double _X;
+
+    /// <summary>
+    /// 空间直角坐标 Y
+    /// </summary>
+    [ObservableProperty]
+    private double _Y;
+
+    /// <summary>
+    /// 空间直角坐标 Z
+    /// </summary>
+    [ObservableProperty]
+    private double _Z;
 
     public override string ToString()
     {
-        return $"{Name}, {X}, {Y}, {dmsB}, {dmsL}, {Gamma}, {M}";
+        return $"{Name}, {N}, {E}, {DmsB}, {DmsL}, {H}, {GammaDms}, {M}, {X}, {Y}, {Z}";
     }
 }

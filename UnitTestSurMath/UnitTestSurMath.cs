@@ -282,11 +282,11 @@ public class UnitTestSurMath
             }
         */
         var A = new Mock<IPoint>();
-        A.SetupProperty(p => p.X, 50342.464);
-        A.SetupProperty(p => p.Y, 3423.232);
+        A.SetupProperty(p => p.N, 50342.464);
+        A.SetupProperty(p => p.E, 3423.232);
         var B = new Mock<IPoint>();
-        B.SetupProperty(p => p.X, 50289.874);
-        B.SetupProperty(p => p.Y, 3528.978);
+        B.SetupProperty(p => p.N, 50289.874);
+        B.SetupProperty(p => p.E, 3528.978);
 
         //获取模拟对象的实例 A.Object B.Object
         var ad = A.Object.Azimuth(B.Object);

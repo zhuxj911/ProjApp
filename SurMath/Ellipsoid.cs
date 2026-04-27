@@ -60,14 +60,16 @@ public class Ellipsoid
         }
     }
 
-    private double b { get; set; }
-    private double e2 { get; set; }
-    private double eT2 { get; set; }
-    private double A0 { get; set; }
-    private double A2 { get; set; }
-    private double A4 { get; set; }
-    private double A6 { get; set; }
-    private double A8 { get; set; }
+    public double b { get; private set; } //短半轴
+	public double c => a * a / b; //极点处的子午线曲率半径
+	
+    public double e2 { get; private set; }
+    public double eT2 { get; private set; }
+    public double A0 { get; private set; }
+    public double A2 { get; private set; }
+    public double A4 { get; private set; }
+    public double A6 { get; private set; }
+    public double A8 { get; private set; }
 
 
     private void InitEllipsoid()
@@ -81,7 +83,7 @@ public class Ellipsoid
 
         var ff = 1 / f;  //换个计算式 ff = 1/f
         b = a * (1 - ff); //短半径 (m)
-        e2 = 2 * ff - ff * ff; //第一偏心率平方 e^2
+        e2 = 2 * ff - ff * ff; //第一偏心率平方 e^2   ff = 1/f    e2 = 2 * ff - ff * ff;
         eT2 = e2 / (1 - e2);   //第二偏心率平方 e'^2
 
         double m0 = a * (1 - e2);
@@ -109,42 +111,6 @@ public class Ellipsoid
         //此处使用属性a, f接收参数，因此不需要调用函数 InitSpheroid
         this.a = semimajor_axis;
         this.f = inverse_flattening;
-    }
-
-    public double funM(double sinB2) => a * (1 - e2) / Math.Pow(1 - e2 * sinB2, 1.5); 
-
-    public double funN(double sinB2) => a / Math.Sqrt(1 - e2 * sinB2);
-
-    public double funR(double sinB2) => Math.Sqrt(funM(sinB2) * funN(sinB2));
-   
-    public double funG2(double cosB2) => eT2 * cosB2;
-
-    public double funX(double B) => A0 * B
-               + A2 * Math.Sin(2 * B)
-               + A4 * Math.Sin(4 * B)
-               + A6 * Math.Sin(6 * B)
-               + A8 * Math.Sin(8 * B);
-
-    public double funBf(double x)
-    {
-        double B0 = x / A0, Bi = 0;
-
-        int i = 0;
-        while (i < 1000)
-        {
-            i++;
-            Bi = (x - (
-                A2 * Math.Sin(2 * B0)
-                + A4 * Math.Sin(4 * B0)
-                + A6 * Math.Sin(6 * B0)
-                + A8 * Math.Sin(8 * B0))) / A0;
-
-            if (Math.Abs(Bi - B0) < 1e-10) break;
-            else
-                B0 = Bi;
-        }
-
-        return Bi;
     }
 
     public override string ToString() => $"{Name}"; 

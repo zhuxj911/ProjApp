@@ -6,6 +6,7 @@ namespace ZXY;
 /// 椭球Ellipsoid 不依赖于 投影算法
 /// 说明椭球Ellipsoid不应该包含投影算法
 /// 投影算法依赖于椭球
+/// Gauss-Kruger
 /// </summary>
 public class GaussProj : IProj
 {
@@ -66,19 +67,19 @@ public class GaussProj : IProj
 
         return (n, e, gamma, m);
     }
-        
+
     /// <summary>
     ///  高斯投影正算，根据经纬度投影计算North-East坐标
     /// </summary>
     /// <param name="latitude">纬度，单位：弧度</param>
     /// <param name="longitude">经度，单位：弧度</param>
     /// <param name="centralMeridianLongitude">中央子午线经度，单位：弧度</param>
-    /// <param name="falseNorth">North坐标加常数，单位：km，高斯投影一般为0km</param>
     /// <param name="falseEast">East坐标加常数，  单位：km，一般为500km</param>
     /// <param name="zone">带号</param>
+    /// <param name="falseNorth">North坐标加常数，单位：km，高斯投影一般为0km</param>
     /// <returns>North, East, 子午线收敛角γ，单位：弧度，长度比m </returns>
     public (double north, double east, double gamma, double m) Forward(double latitude, double longitude, double centralMeridianLongitude, 
-        double falseNorth = 0.0, double falseEast = 500.0, double zone = 0.0)
+        double falseEast = 0.0, double zone = 0.0, double falseNorth = 0.0)
     {
         double dl = longitude - centralMeridianLongitude;
         var (north, east, gamma, m) = Forward(latitude, dl);
@@ -132,19 +133,19 @@ public class GaussProj : IProj
         return (lat, dl, gamma, m);
     }
 
-        
+
     /// <summary>
     /// 高斯投影反算，根据North-East坐标计算经纬度
     /// </summary>
     /// <param name="north">North坐标，单位：m</param>
     /// <param name="east">East坐标，单位：m</param>
     /// <param name="centralMeridianLongitude">中央子午线经度，单位：弧度</param>
-    /// <param name="falseNorth">North坐标加常数，单位：km，高斯投影一般为0km</param>
     /// <param name="falseEast">East坐标加常数，单位：km，一般为500km</param>
     /// <param name="zone">带号</param>
+    /// <param name="falseNorth">North坐标加常数，单位：km，高斯投影一般为0km</param> 
     /// <returns>纬度，单位：弧度；经度，单位：弧度；子午线收敛角γ，单位：弧度，长度比m</returns>
     public (double latitude, double longitude, double gamma, double m) Inverse(double north, double east, double centralMeridianLongitude, 
-        double falseNorth = 0.0, double falseEast = 500.0, double zone = 0.0)
+        double falseNorth = 0.0, double falseEast = 0.0, double zone = 0.0)
     {
         double ee = east - zone * 1e6 - falseEast * 1e3;
         var (latitude, dl, gamma, m) = Inverse(north, ee);

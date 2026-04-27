@@ -31,12 +31,12 @@ public class UtmProj : IProj
     /// <param name="latitude">纬度，单位：弧度</param>
     /// <param name="longitude">经度，单位：弧度</param>
     /// <param name="centralMeridianLongitude">中央子午线经度，单位：弧度</param>
-    /// <param name="falseNorth">North坐标加常数，单位：km，一般为10000km</param>
     /// <param name="falseEast">East坐标加常数，  单位：km，一般为500km</param>
     /// <param name="zone">带号</param>
+    /// <param name="falseNorth">North坐标加常数，单位：km，北半球为0km， 南半球一般为10000km</param>
     /// <returns>North, East, 子午线收敛角γ，单位：弧度，长度比m </returns>
     public (double north, double east, double gamma, double m) Forward(double latitude, double longitude, double centralMeridianLongitude,
-        double falseNorth = 10000.0, double falseEast = 500.0, double zone = 0.0)
+        double falseEast = 0.0, double zone = 0.0, double falseNorth = 0.0)
     {
         var (north, east, gamma, m) = proj.Forward(latitude, longitude - centralMeridianLongitude);
         north = north * k0 + (latitude < 0.0 ? falseNorth * 1e3 : 0.0); //如果纬度为南半球，则North坐标加上10000km的偏移
@@ -50,12 +50,12 @@ public class UtmProj : IProj
     /// <param name="north">North坐标，单位：m</param>
     /// <param name="east">East坐标，单位：m</param>
     /// <param name="centralMeridianLongitude">中央子午线经度，单位：弧度</param>
-    /// <param name="falseNorth">North坐标加常数，单位：km，一般为10000km</param>
+    /// <param name="falseNorth">North坐标加常数，单位：km，北半球为0km， 南半球一般为10000km</param>
     /// <param name="falseEast">East坐标加常数，单位：km，一般为500km</param>
     /// <param name="zone">带号</param>
     /// <returns>纬度，单位：弧度；经度，单位：弧度；子午线收敛角γ，单位：弧度，长度比m</returns>
     public (double latitude, double longitude, double gamma, double m) Inverse(double north, double east, double centralMeridianLongitude,
-        double falseNorth = 10000.0, double falseEast = 500.0, double zone = 0.0)
+        double falseNorth = 0.0, double falseEast = 0.0, double zone = 0.0)
     {
         north -= falseNorth * 1e3; //North坐标减去10000km的偏移
         east -= falseEast * 1e3 - zone * 1e6; //East坐标减去500km的偏移与减去带号对应的偏移

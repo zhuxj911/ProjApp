@@ -41,7 +41,7 @@ public class UnitTestGaussProj
         var ellipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.CGCS2000];
         IProj proj = new GaussProj(ellipsoid);
 
-        var (N, E, gamma, m) = proj.Forward(lat, lon, lon0, 0, 500, 39);
+        var (N, E, gamma, m) = proj.Forward(lat, lon, lon0, 500, 39);
         Assert.Equal(4419432.367677833, N, 1e-3);
         Assert.Equal(39448455.02271326, E, 1e-3);
         Assert.Equal("-0°23'12.245514\"", SurMath.RadiansToDmsString(gamma));
@@ -106,7 +106,7 @@ public class UnitTestGaussProj
         var ellipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.Beijing1954];
         GaussProj proj = new GaussProj(ellipsoid);
        
-        var (x, y, _, _) = proj.Forward(B, L, L0, 0, 500, 37);
+        var (x, y, _, _) = proj.Forward(B, L, L0, 500, 37);
         Assert.Equal(2433586.692, x, 1e-3);
         Assert.Equal(37750547.403, y, 1e-3);
     }

@@ -17,14 +17,14 @@ public class Point : IPoint
     }
 
     private double x;
-    public double X
+    public double N
     {
         get => x;
         set => x = value;
     }
 
     private double y;
-    public double Y
+    public double E
     {
         get => y;
         set => y = value;
@@ -39,7 +39,7 @@ public class Point : IPoint
 
     public override string ToString()
     {
-        return $"{Name}, {Code}, {X}, {Y}, {Z}";
+        return $"{Name}, {Code}, {N}, {E}, {Z}";
     }
 
 }

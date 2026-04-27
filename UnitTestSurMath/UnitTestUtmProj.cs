@@ -25,7 +25,7 @@ public class UnitTestUtmProj
 
         var ellipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.WGS1984];
         var proj = new UtmProj(ellipsoid);
-        var (n, e, gamma, m) = proj.Forward(lat, lon, lon0);
+        var (n, e, gamma, m) = proj.Forward(lat, lon, lon0, 500);
         Assert.Equal(4417664.594844512, n, 1e-3);
         Assert.Equal(448475.64070452086, e, 1e-3);
         Assert.Equal("-0°23'12.245514\"", SurMath.RadiansToDmsString(gamma));
@@ -63,7 +63,7 @@ public class UnitTestUtmProj
         //Input coordinate system   EPSG:4326 WGS 84 Longitude/Latitude  151°12'33.48" E 33°52'7.68" S
         //Output coordinate system  EPSG:32656 WGS 84 / UTM zone 56N   334368.633648097 E -3749051.6546149906 N
 
-        (n, e, gamma, m) = proj.Forward(lat, lon, lon0);
+        (n, e, gamma, m) = proj.Forward(lat, lon, lon0, 500, 0, 10000);
         Assert.Equal(-3749051.6546149906 + 10000*1e3, n, 1e-3);
         Assert.Equal(334368.633648097, e, 1e-3);
         Assert.Equal("0°59'53.418677\"", SurMath.RadiansToDmsString(gamma));

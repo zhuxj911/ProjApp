@@ -4,8 +4,8 @@ namespace ZXY;
 
 public interface IPoint
 {
-    double X { get; set; }
-    double Y { get; set; }
+    double N { get; set; }
+    double E { get; set; }
 }
 
 /// <summary>
@@ -15,7 +15,7 @@ public static class PointExtensions
 {
     public static (double a, double d) Azimuth(this IPoint A, IPoint B)
     {
-        return SurMath.Azimuth(A.X, A.Y, B.X, B.Y);
+        return SurMath.Azimuth(A.N, A.E, B.N, B.E);
     }
 
     /// <summary>
@@ -27,8 +27,8 @@ public static class PointExtensions
     /// <param name="alpha">旋转角，单位为弧度</param>
     public static void TransformXY(this IPoint pt, double dx, double dy, double alpha)
     {
-        var xy = SurMath.TransformXY(pt.X, pt.Y, dx, dy, alpha);
-        pt.X = xy.X; pt.Y = xy.Y;
+        var xy = SurMath.TransformXY(pt.N, pt.E, dx, dy, alpha);
+        pt.N = xy.X; pt.E = xy.Y;
     }
 
     /// <summary>
@@ -40,7 +40,7 @@ public static class PointExtensions
     /// <returns>左偏：−1 或 右偏或直线：1</returns>
     public static int IsRight(this IPoint p1, IPoint p2, IPoint p3)
     {
-        if ((p2.Y - p1.Y) * (p3.X - p2.X) <= (p3.Y - p2.Y) * (p2.X - p1.X))
+        if ((p2.E - p1.E) * (p3.N - p2.N) <= (p3.E - p2.E) * (p2.N - p1.N))
             return 1;
         else  //(p2.Y-p1.Y)*(p3.X-p2.X) > (p3.Y-p2.Y)*(p2.X-p1.X)
             return -1;

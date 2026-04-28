@@ -77,14 +77,14 @@ public class Ellipsoid
         //防御性处理，防止界面上给a与f输入值0导致程序崩溃
         if (a <= 0 || f <= 0) return;
 
-        //b = a * (1 - 1 / f);
-        //e2 = 1 - b / a * b / a;
-        //eT2 = a / b * a / b - 1;
+        b = a * (1 - 1 / f);
+        e2 = 1 - b / a * b / a;
+        eT2 = a / b * a / b - 1;
 
-        var ff = 1 / f;  //换个计算式 ff = 1/f
-        b = a * (1 - ff); //短半径 (m)
-        e2 = 2 * ff - ff * ff; //第一偏心率平方 e^2   ff = 1/f    e2 = 2 * ff - ff * ff;
-        eT2 = e2 / (1 - e2);   //第二偏心率平方 e'^2
+        //var ff = 1 / f;  //换个计算式 ff = 1/f
+        //b = a * (1 - ff); //短半径 (m)
+        //e2 = 2 * ff - ff * ff; //第一偏心率平方 e^2   ff = 1/f    e2 = 2 * ff - ff * ff;
+        //eT2 = e2 / (1 - e2);   //第二偏心率平方 e'^2
 
         double m0 = a * (1 - e2);
         double e4 = e2 * e2;

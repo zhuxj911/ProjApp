@@ -138,7 +138,7 @@ public class UnitTestUtmProj
         var e = 448475.64070452086;
         var lon0 = SurMath.DegreeToRadians(117);
 
-        var (lat, lon, gamma, m) = proj.Inverse(n, e, lon0, 0, 500, 0);
+        var (lat, lon, gamma, m) = proj.Inverse(n, e, lon0, 500, 0, 0);
         var tlat = SurMath.RadiansToDms(lat);
         var tlon = SurMath.RadiansToDms(lon);
         Assert.Equal(39.5427, tlat, 1e-4);
@@ -161,7 +161,7 @@ public class UnitTestUtmProj
         e = 357314.66519028944;
         lon0 = SurMath.DegreeToRadians(123);
 
-        (lat, lon, gamma, m) = proj.Inverse(n, e, lon0, 0, 500, 0);
+        (lat, lon, gamma, m) = proj.Inverse(n, e, lon0, 500, 0, 0);
         tlat = SurMath.RadiansToDegree(lat);
         tlon = SurMath.RadiansToDegree(lon);
         Assert.Equal(31.2397, tlat, 1e-4);
@@ -179,7 +179,7 @@ public class UnitTestUtmProj
         e = 334368.633648097;
         lon0 = SurMath.DegreeToRadians(153);
 
-        (lat, lon, gamma, m) = proj.Inverse(n, e, lon0, 10000, 500, 0);
+        (lat, lon, gamma, m) = proj.Inverse(n, e, lon0, 500, 0, 10000);
         tlat = SurMath.RadiansToDegree(lat);
         tlon = SurMath.RadiansToDegree(lon);
         Assert.Equal(-33.8688, tlat, 1e-4);
@@ -197,7 +197,7 @@ public class UnitTestUtmProj
         e = 166021.44308054337;
         lon0 = SurMath.DegreeToRadians(111);
 
-        (lat, lon, gamma, m) = proj.Inverse(n, e, lon0, 0, 500, 0);
+        (lat, lon, gamma, m) = proj.Inverse(n, e, lon0, 500, 0, 0);
         tlat = SurMath.RadiansToDegree(lat);
         tlon = SurMath.RadiansToDegree(lon);
         Assert.Equal(0.0, tlat, 1e-4);
@@ -215,7 +215,7 @@ public class UnitTestUtmProj
         e = 197389.33118408715;
         lon0 = SurMath.DegreeToRadians(117);
 
-        (lat, lon, gamma, m) = proj.Inverse(n, e, lon0, 0, 500, 0);
+        (lat, lon, gamma, m) = proj.Inverse(n, e, lon0, 500, 0, 0);
         tlat = SurMath.RadiansToDegree(lat);
         tlon = SurMath.RadiansToDegree(lon);
         Assert.Equal(22.5431, tlat, 1e-4);
@@ -233,7 +233,7 @@ public class UnitTestUtmProj
         e = 310494.9844291871;
         lon0 = SurMath.DegreeToRadians(111);
 
-        (lat, lon, gamma, m) = proj.Inverse(n, e, lon0, 0, 500, 0);
+        (lat, lon, gamma, m) = proj.Inverse(n, e, lon0, 500, 0, 0);
         tlat = SurMath.RadiansToDegree(lat);
         tlon = SurMath.RadiansToDegree(lon);
         Assert.Equal(34.3416, tlat, 1e-4);

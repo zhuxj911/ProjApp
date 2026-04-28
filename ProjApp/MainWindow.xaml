@@ -100,7 +100,7 @@
 
             <Button
                 Margin="10,2,2,2"
-                Command="{Binding BLHtoXYYCommand}"
+                Command="{Binding BLHtoXYZCommand}"
                 Content="(B,L,H)-&gt;(X,Y,Z)"
                 FontSize="14"
                 ToolTip="(B,L,H)-&gt;(X,Y,Z)" />
@@ -114,11 +114,11 @@
                 Margin="10,2,2,2"
                 Command="{Binding ClearBLCommand}"
                 Content="&#xe4F8;"
-                ToolTip="清除 B，L" />
+                ToolTip="清除 B,L" />
             <Button
                 Command="{Binding ClearNECommand}"
                 Content="&#xe4F6;"
-                ToolTip="清除N，E" />
+                ToolTip="清除N,E" />
             <Button
                 Command="{Binding ClearXYZCommand}"
                 Content="&#xe4F6;"
@@ -208,7 +208,7 @@
                     <TextBox
                         Grid.Row="1"
                         Grid.Column="1"
-                        Text="{Binding YKM}" />
+                        Text="{Binding FalseEast}" />
                     <Label
                         Grid.Row="1"
                         Grid.Column="2"
@@ -222,7 +222,7 @@
                         Grid.Row="1"
                         Grid.Column="4"
                         Grid.ColumnSpan="3"
-                        Text="{Binding XKM}" />
+                        Text="{Binding FalseNorth}" />
                     <Label
                         Grid.Row="1"
                         Grid.Column="7"
@@ -247,6 +247,14 @@
                                 Binding="{Binding Name}"
                                 Header="点名" />
                             <DataGridTextColumn
+                                MinWidth="80"
+                                Binding="{Binding N, StringFormat={}{0:0.####}}"
+                                Header="N(m)" />
+                            <DataGridTextColumn
+                                MinWidth="80"
+                                Binding="{Binding E, StringFormat={}{0:0.####}}"
+                                Header="E(m)" />
+                            <DataGridTextColumn
                                 MinWidth="50"
                                 Binding="{Binding DmsB, StringFormat={}{0:0.#########}}"
                                 Header="B(D.MMSS)" />
@@ -260,19 +268,11 @@
                                 Header="H(m)" />
                             <DataGridTextColumn
                                 MinWidth="100"
-                                Binding="{Binding N, StringFormat={}{0:0.####}}"
-                                Header="N(m)" />
-                            <DataGridTextColumn
-                                MinWidth="100"
-                                Binding="{Binding E, StringFormat={}{0:0.####}}"
-                                Header="E(m)" />
-                            <DataGridTextColumn
-                                MinWidth="100"
                                 Binding="{Binding M}"
                                 Header="m" />
                             <DataGridTextColumn
                                 MinWidth="100"
-                                Binding="{Binding GammaDmsString}"
+                                Binding="{Binding GammaDmsString, Mode=OneWay}"
                                 Header="γ" />
                             <DataGridTextColumn
                                 MinWidth="50"

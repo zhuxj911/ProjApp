@@ -14,7 +14,7 @@ using ZXY;
 
 namespace ProjApp.Models;
 
-public partial class GeoPoint : ViewModelBase, IPoint
+public partial class GeoPoint : ViewModelBase
 {
     [ObservableProperty]
     private string name;
@@ -70,14 +70,23 @@ public partial class GeoPoint : ViewModelBase, IPoint
     private double _H = 0.0;
 
     /// <summary>
-    /// 子午线收敛角，单位：弧度
+    /// 子午线收敛角，单位：D.MMSS
     /// </summary>
     [ObservableProperty]
-    private double gamma;
+    [NotifyPropertyChangedFor(nameof(Gamma))]
+    [NotifyPropertyChangedFor(nameof(GammaDmsString))]
+    private double dmsGamma;
+
+    /// <summary>
+    /// 经度，单位为弧度
+    /// </summary>
+    public double Gamma
+    {
+        get => ZXY.SurMath.DmsToRadians(DmsGamma);
+        set => DmsGamma = ZXY.SurMath.RadiansToDms(value);
+    }
 
     public string GammaDmsString => ZXY.SurMath.RadiansToDmsString(Gamma);
-
-    public double GammaDms => ZXY.SurMath.RadiansToDms(Gamma);
 
     [ObservableProperty]
     private double m;
@@ -102,6 +111,6 @@ public partial class GeoPoint : ViewModelBase, IPoint
 
     public override string ToString()
     {
-        return $"{Name}, {N}, {E}, {DmsB}, {DmsL}, {H}, {GammaDms}, {M}, {X}, {Y}, {Z}";
+        return $"{Name}, {N}, {E}, {DmsB}, {DmsL}, {H}, {M}, {DmsGamma}, {X}, {Y}, {Z}";
     }
 }

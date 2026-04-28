@@ -73,17 +73,17 @@ public class GaussProj : IProj
     /// </summary>
     /// <param name="latitude">纬度，单位：弧度</param>
     /// <param name="longitude">经度，单位：弧度</param>
-    /// <param name="centralMeridianLongitude">中央子午线经度，单位：弧度</param>
-    /// <param name="falseEast">East坐标加常数，  单位：km，一般为500km</param>
+    /// <param name="centralMeridian">中央子午线经度，单位：弧度</param>
+    /// <param name="falseEasting">East坐标加常数，  单位：km，一般为500km</param>
     /// <param name="zone">带号</param>
-    /// <param name="falseNorth">North坐标加常数，单位：km，高斯投影一般为0km</param>
+    /// <param name="falseNorthing">North坐标加常数，单位：km，高斯投影一般为0km</param>
     /// <returns>North, East, 子午线收敛角γ，单位：弧度，长度比m </returns>
-    public (double north, double east, double gamma, double m) Forward(double latitude, double longitude, double centralMeridianLongitude, 
-        double falseEast = 0.0, double zone = 0.0, double falseNorth = 0.0)
+    public (double north, double east, double gamma, double m) Forward(double latitude, double longitude, double centralMeridian, 
+        double falseEasting = 0.0, double zone = 0.0, double falseNorthing = 0.0)
     {
-        double dl = longitude - centralMeridianLongitude;
+        double dl = longitude - centralMeridian;
         var (north, east, gamma, m) = Forward(latitude, dl);
-        return (north + falseNorth * 1e3, east + falseEast * 1e3 + zone * 1e6, gamma, m);
+        return (north + falseNorthing * 1e3, east + falseEasting * 1e3 + zone * 1e6, gamma, m);
     }
 
     internal (double lat, double dl, double gamma, double m) Inverse(double n, double e)
@@ -139,16 +139,16 @@ public class GaussProj : IProj
     /// </summary>
     /// <param name="north">North坐标，单位：m</param>
     /// <param name="east">East坐标，单位：m</param>
-    /// <param name="centralMeridianLongitude">中央子午线经度，单位：弧度</param>
-    /// <param name="falseEast">East坐标加常数，单位：km，一般为500km</param>
+    /// <param name="centralMeridian">中央子午线经度，单位：弧度</param>
+    /// <param name="falseEasting">East坐标加常数，单位：km，一般为500km</param>
     /// <param name="zone">带号</param>
-    /// <param name="falseNorth">North坐标加常数，单位：km，高斯投影一般为0km</param> 
+    /// <param name="falseNorthing">North坐标加常数，单位：km，高斯投影一般为0km</param> 
     /// <returns>纬度，单位：弧度；经度，单位：弧度；子午线收敛角γ，单位：弧度，长度比m</returns>
-    public (double latitude, double longitude, double gamma, double m) Inverse(double north, double east, double centralMeridianLongitude, 
-        double falseNorth = 0.0, double falseEast = 0.0, double zone = 0.0)
+    public (double latitude, double longitude, double gamma, double m) Inverse(double north, double east, double centralMeridian, 
+        double falseEasting = 0.0, double zone = 0.0, double falseNorthing = 0.0)
     {
-        double ee = east - zone * 1e6 - falseEast * 1e3;
+        double ee = east - zone * 1e6 - falseEasting * 1e3;
         var (latitude, dl, gamma, m) = Inverse(north, ee);
-        return (latitude, centralMeridianLongitude + dl, gamma, m);
+        return (latitude, centralMeridian + dl, gamma, m);
     }
 }

@@ -49,6 +49,30 @@ public class UnitTestXYZtoBLH
     }
 
     [Fact]
+    public void Test_Beijing1954_BLHtoXYZ()
+    {
+        var ellipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.Beijing1954];
+        {
+            var B = SurMath.DmsToRadians(34.222004343);
+            var L = SurMath.DmsToRadians(109.133400626);
+            var H = 0.0;
+
+            var (X, Y, Z) = ellipsoid.BLHtoXYZ(B, L, H);
+
+            //验证数据由笑脸坐标转换4.2版提供
+            Assert.Equal(-1735443.505443, X, 1e-5); //-1735443.5054467432
+            Assert.Equal(4976211.355080, Y, 1e-5);  //4976211.3550843112
+            Assert.Equal(3580666.123764, Z, 1e-4);  //3580666.123755361
+
+            var (tB, tL, tH) = ellipsoid.XYZtoBLH(X, Y, Z);
+            Assert.Equal(34.222004343, SurMath.RadiansToDms(tB), 1e-9); 
+            Assert.Equal(109.133400626, SurMath.RadiansToDms(tL), 1e-9);
+            Assert.Equal(0.0, tH, 1e-7); //-2.60770320892334E-08
+        }
+    }
+
+
+    [Fact]
     public void Test_CGCS2000_XYZtoBLH()
     {
         var ellipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.CGCS2000];

@@ -218,43 +218,42 @@ public partial class ProjViewModel : ViewModelBase
                 if (buffer.Contains<char>(':'))
                 {
                     items = buffer.Split([':']);
-
-                    string itemName = items[0].Trim();
-                    switch (itemName)
+                    var cap = items[0].Trim();
+                    switch (cap)
                     {
                         case "CS":
                             string item2 = items[1].Trim();
+                            var its = item2.Split([',']);
                             if ((item2 == "CS00"))
                             {
-                                string[] its = item2.Split([':']);
-                                if (its.Length == 3 && its[0] == "CS00")
-                                {
+                                if (its is ["CS00", _, _])  //if (its.Length == 3 && its[0] == "CS00")
+                                {  
                                     CurrentEllipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.CS00];
-                                    CurrentEllipsoid.a = double.Parse(its[1]);
-                                    CurrentEllipsoid.f = double.Parse(its[2]);
+                                    CurrentEllipsoid.a = double.TryParse(its[1], out var va) ? va : 0.0;
+                                    CurrentEllipsoid.f = double.TryParse(its[2], out var vf) ? vf : 1.0;
                                 }
                             }
                             else //item2 == "BJ54" or item2 == "XA80" or item2 == "WGS84" or item2 == "CGCS2000"
                             {
-                                CurrentEllipsoid = EllipsoidFactory.IdEllipsoids[item2];
+                                CurrentEllipsoid = EllipsoidFactory.IdEllipsoids[its[0]];
                             }
                             break;
 
                         case "L0":
                             //默认为 D.MMSS
-                            dmsL0 = double.Parse(items[1]);
+                            dmsL0 = double.TryParse(items[1], out var vL0) ? vL0 : 0.0;
                             break;
 
                         case "YKM":
-                            FalseEast = double.Parse(items[1]);
+                            FalseEast = double.TryParse(items[1], out var vYKM) ? vYKM : 0.0;
                             break;
 
                         case "XKM":
-                            FalseNorth = double.Parse(items[1]);
+                            FalseNorth = double.TryParse(items[1], out var vXKM) ? vXKM : 0.0;
                             break;
 
                         case "N":
-                            N = int.Parse(items[1]);
+                            N = int.TryParse(items[1], out var vN) ? vN : 0;
                             break;
                         case "PROJ":                            
                             Proj = EllipsoidFactory.IdProjs[items[1].Trim()]; //如果没有输错的话，此时items[1].Trim()的值为GaussProj or UTMProj
@@ -268,17 +267,61 @@ public partial class ProjViewModel : ViewModelBase
                 }
 
                 items = buffer.Split([',']);
-                if (items.Length < 3) continue; //少于三项数据，不是点的坐标数据，忽略
-                GeoPoint pnt = new GeoPoint();
-                pnt.Name = items[0].Trim();
-                pnt.N = double.Parse(items[1]);
-                pnt.E = double.Parse(items[2]);
+                var pnt = new GeoPoint();
 
-                if (items.Length >= 5)
+                if (items.Length < 3) 
+                    continue; //少于三项数据，不是点的坐标数据，忽略
+                else if(items.Length == 3)
                 {
+                    pnt.Name = items[0].Trim();
+                    pnt.N = double.TryParse(items[1], out var vN) ? vN : 0.0;
+                    pnt.E = double.TryParse(items[2], out var vE) ? vE : 0.0;
+                }
+               else if (items.Length == 5)
+                {
+                    pnt.Name = items[0].Trim();
+                    pnt.N = double.TryParse(items[1], out var vN) ? vN : 0.0;
+                    pnt.E = double.TryParse(items[2], out var vE) ? vE : 0.0;
                     //默认为 D.MMSS
-                    pnt.DmsB = double.Parse(items[3]);
-                    pnt.DmsL = double.Parse(items[4]);
+                    pnt.DmsB = double.TryParse(items[3], out var vB) ? vB : 0.0;
+                    pnt.DmsL = double.TryParse(items[4], out var vL) ? vL : 0.0;
+                }
+                else if (items.Length == 6)
+                {
+                    pnt.Name = items[0].Trim();
+                    pnt.N = double.TryParse(items[1], out var vN) ? vN : 0.0;
+                    pnt.E = double.TryParse(items[2], out var vE) ? vE : 0.0;
+                    //默认为 D.MMSS
+                    pnt.DmsB = double.TryParse(items[3], out var vB) ? vB : 0.0;
+                    pnt.DmsL = double.TryParse(items[4], out var vL) ? vL : 0.0;
+                    pnt.H = double.TryParse(items[5], out var vH) ? vH : 0.0;
+                }
+                else if (items.Length == 8)
+                {
+                    pnt.Name = items[0].Trim();
+                    pnt.N = double.TryParse(items[1], out var vN) ? vN : 0.0;
+                    pnt.E = double.TryParse(items[2], out var vE) ? vE : 0.0;
+                    //默认为 D.MMSS
+                    pnt.DmsB = double.TryParse(items[3], out var vB) ? vB : 0.0;
+                    pnt.DmsL = double.TryParse(items[4], out var vL) ? vL : 0.0;
+                    pnt.H = double.TryParse(items[5], out var vH) ? vH : 0.0;
+                    pnt.M = double.TryParse(items[6], out var vM) ? vM : 0.0;
+                    pnt.Gamma = double.TryParse(items[7], out var vGamma) ? vGamma : 0.0;
+                }
+                else if (items.Length == 11)
+                {
+                    pnt.Name = items[0].Trim();
+                    pnt.N = double.TryParse(items[1], out var vN) ? vN : 0.0;
+                    pnt.E = double.TryParse(items[2], out var vE) ? vE : 0.0;
+                    //默认为 D.MMSS
+                    pnt.DmsB = double.TryParse(items[3], out var vB) ? vB : 0.0;
+                    pnt.DmsL = double.TryParse(items[4], out var vL) ? vL : 0.0;
+                    pnt.H = double.TryParse(items[5], out var vH) ? vH : 0.0;
+                    pnt.M = double.TryParse(items[6], out var vM) ? vM : 0.0;
+                    pnt.Gamma = double.TryParse(items[7], out var vGamma) ? vGamma : 0.0;
+                    pnt.X = double.TryParse(items[8], out var vX) ? vX : 0.0;
+                    pnt.Y = double.TryParse(items[9], out var vY) ? vY : 0.0;
+                    pnt.Z = double.TryParse(items[10], out var vZ) ? vZ : 0.0;
                 }
                 this.PointList.Add(pnt);
             }

@@ -151,10 +151,9 @@ public partial class AzimuthViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanCalculate))]
     private void Calculate()
     {
-        // var ad = ZXY.SurMath.Azimuth(A.X, A.Y, B.X, B.Y);
-        var ad = A.Azimuth(B); //使用接口扩展
-        AzValue = ZXY.SurMath.RadiansToDmsString(ad.a); 
-        Dist = ad.d;
+        var (a, d) = ZXY.SurMath.Azimuth(A.N, A.E, B.N, B.E);
+        AzValue = ZXY.SurMath.RadiansToDmsString(a); 
+        Dist = d;
         AzName = $"{A.Name} -> {B.Name} 坐标方位角";
     }
 }

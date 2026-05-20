@@ -9,8 +9,8 @@
 #CS: GRS80
 #CS: CS00, 6378137, 298.257222101
 CS: CGCS2000
-#PROJ 指定投影类型: 高斯投影 -> GaussProj   UTM投影 -> UTMProj
-PROJ: UTMProj
+#PROJ 指定投影类型: 高斯投影 -> GaussKruger  UTM投影 -> UTM
+PROJ: UTM
 #角度数据格式为D.MMSS
 L0: 111
 YKM: 500
@@ -19,5 +19,5 @@ N: 0
 #角度的单位，默认为 D.MMSS
 #ANGLE : DEGREE D.MMSSS RADIAN
 ANGLE: D.MMSSS
-#点名, north, east, latitude, longitude, γ, m
-西安, 3801955.457225442, 310494.98442447046, 34.202976, 108.562328, -1°09'45.208995", 1.0000426832017948
+#点名, north, east, latitude, longitude,
+西安, 3801955.457225442, 310494.98442447046, 34.202976, 108.562328

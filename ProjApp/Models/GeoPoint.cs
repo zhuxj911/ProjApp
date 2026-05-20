@@ -14,10 +14,10 @@ using ZXY;
 
 namespace ProjApp.Models;
 
-public partial class GeoPoint : ViewModelBase
+public partial class GeoPoint : ObservableObject
 {
     [ObservableProperty]
-    private string name;
+    private string name = "";
     
     /// <summary>
     /// 投影坐标系中的北坐标
@@ -37,14 +37,27 @@ public partial class GeoPoint : ViewModelBase
     [ObservableProperty]
     private double dmsB;
 
+    /// <summary>
+    /// 椭球膨胀时的纬度增量，单位为度分秒
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DB))]
+    [NotifyPropertyChangedFor(nameof(B))]
+    private double dmsDB = 0.0;
+
+    public double DB
+    {
+        get => ZXY.SurMath.DmsToRadians(DmsDB);
+        set => DmsDB = ZXY.SurMath.RadiansToDms(value);
+    }
 
     /// <summary>
     /// 纬度，单位为弧度
     /// </summary>
     public double B
     {
-        get => ZXY.SurMath.DmsToRadians(DmsB);
-        set => DmsB = ZXY.SurMath.RadiansToDms(value);
+        get => ZXY.SurMath.DmsToRadians(DmsB) + DB;
+        set => DmsB = ZXY.SurMath.RadiansToDms(value - DB);
     }
 
     
@@ -68,6 +81,12 @@ public partial class GeoPoint : ViewModelBase
     /// </summary>
     [ObservableProperty]
     private double _H = 0.0;
+
+    /// <summary>
+    /// 大地高增量
+    /// </summary>
+    [ObservableProperty]
+    private double _dH = 0.0;
 
     /// <summary>
     /// 子午线收敛角，单位：D.MMSS
@@ -111,6 +130,7 @@ public partial class GeoPoint : ViewModelBase
 
     public override string ToString()
     {
-        return $"{Name}, {N}, {E}, {DmsB}, {DmsL}, {H}, {M}, {DmsGamma}, {X}, {Y}, {Z}";
+        //点名, N(m), E(m), B(D.MMSS), L(D.MMSS), H(m), M, γ(D.MMSS), X(m), Y(m), Z(m), ΔB, ΔH
+        return $"{Name}, {N}, {E}, {DmsB}, {DmsL}, {H}, {M}, {DmsGamma}, {X}, {Y}, {Z}, {DmsDB}, {DH}";
     }
 }

@@ -5,7 +5,7 @@
 /// </summary>
 public class UtmProj : IProj
 {
-    public string Id { get; } = "UTMProj";
+    public string Id { get; } = "UTM";
     public string Name { get; } = "UTM 投影";
 
     override public string ToString() => Name;
@@ -13,13 +13,13 @@ public class UtmProj : IProj
     private double k0 = 0.9996;
     private GaussProj proj;
 
-    public UtmProj(Ellipsoid ellipsoid)
+    public UtmProj(IEllipsoid ellipsoid)
     {
         ResetProj(ellipsoid);
         //proj = new GaussProj(ellipsoid);
     }
 
-    public void ResetProj(Ellipsoid ellipsoid)
+    public void ResetProj(IEllipsoid ellipsoid)
     {
         proj = new GaussProj(ellipsoid);
     }

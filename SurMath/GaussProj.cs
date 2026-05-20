@@ -10,20 +10,20 @@ namespace ZXY;
 /// </summary>
 public class GaussProj : IProj
 {
-    public string Id { get; } = "GaussProj";
+    public string Id { get; } = "GaussKruger";
     public string Name { get; } = "高斯-克吕格投影";
 
     override public string ToString() => Name;
 
-    private Ellipsoid ellipsoid;
+    private IEllipsoid ellipsoid;
 
-    public GaussProj(Ellipsoid ellipsoid)
+    public GaussProj(IEllipsoid ellipsoid)
     {
         //this.ellipsoid = ellipsoid;
         ResetProj(ellipsoid);
     }
 
-    public void ResetProj(Ellipsoid ellipsoid)
+    public void ResetProj(IEllipsoid ellipsoid)
     {
         this.ellipsoid = ellipsoid;
     }

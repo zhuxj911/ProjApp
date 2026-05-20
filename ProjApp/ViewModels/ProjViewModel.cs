@@ -1,22 +1,25 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.Win32;
-using ProjApp.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Win32;
+using Proj.Models;
+using ProjApp.Models;
 using ZXY;
 
 namespace ProjApp.ViewModels;
 
 public partial class ProjViewModel : ViewModelBase
 {
-    public List<Ellipsoid> EllipsoidList => EllipsoidFactory.EllipsoidList;
-    public List<IProj> ProjList => EllipsoidFactory.ProjList;
+    public List<XEllipsoid> EllipsoidList => EllipsoidFactory.EllipsoidList;
+    public List<IProj> ProjList => ProjType.ProjList;
 
-    private Ellipsoid currentEllipsoid = EllipsoidFactory.EllipsoidList[0];
-    public Ellipsoid CurrentEllipsoid
+    private XEllipsoid currentEllipsoid = EllipsoidFactory.EllipsoidList[0];
+    public XEllipsoid CurrentEllipsoid
     {
         get => currentEllipsoid;
         set
@@ -26,7 +29,8 @@ public partial class ProjViewModel : ViewModelBase
         }
     }
 
-    private IProj _proj = EllipsoidFactory.ProjList[0];
+
+    private IProj _proj = ProjType.ProjList[0];
     public IProj Proj
     {
         get => _proj;
@@ -40,6 +44,7 @@ public partial class ProjViewModel : ViewModelBase
             }
         }
     }
+
 
     /// <summary>
     /// 中央子午线的经度，单位:度分秒
@@ -182,7 +187,7 @@ public partial class ProjViewModel : ViewModelBase
     public void NewFile()
     {
         FileName = "untitle";
-        CurrentEllipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.CGCS2000];
+        CurrentEllipsoid = EllipsoidFactory.EllipsoidTypes["CGCS2000"];
         dmsL0 = 0;
         FalseEast = 0;
         N = 0;
@@ -218,7 +223,8 @@ public partial class ProjViewModel : ViewModelBase
                 if (buffer.Contains<char>(':'))
                 {
                     items = buffer.Split([':']);
-                    var cap = items[0].Trim();
+                    string v = items[0].Trim();
+                    var cap = v;
                     switch (cap)
                     {
                         case "CS":
@@ -227,15 +233,15 @@ public partial class ProjViewModel : ViewModelBase
                             if ((item2 == "CS00"))
                             {
                                 if (its is ["CS00", _, _])  //if (its.Length == 3 && its[0] == "CS00")
-                                {  
-                                    CurrentEllipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.CS00];
+                                {
+                                    CurrentEllipsoid = EllipsoidFactory.EllipsoidTypes["CS00"];
                                     CurrentEllipsoid.a = double.TryParse(its[1], out var va) ? va : 0.0;
                                     CurrentEllipsoid.f = double.TryParse(its[2], out var vf) ? vf : 1.0;
                                 }
                             }
                             else //item2 == "BJ54" or item2 == "XA80" or item2 == "WGS84" or item2 == "CGCS2000"
                             {
-                                CurrentEllipsoid = EllipsoidFactory.IdEllipsoids[its[0]];
+                                CurrentEllipsoid = EllipsoidFactory.EllipsoidTypes[its[0]];
                             }
                             break;
 
@@ -255,8 +261,8 @@ public partial class ProjViewModel : ViewModelBase
                         case "N":
                             N = int.TryParse(items[1], out var vN) ? vN : 0;
                             break;
-                        case "PROJ":                            
-                            Proj = EllipsoidFactory.IdProjs[items[1].Trim()]; //如果没有输错的话，此时items[1].Trim()的值为GaussProj or UTMProj
+                        case "PROJ":
+                            Proj = ProjType.ProjTypes[items[1].Trim()]; //如果没有输错的话，此时items[1].Trim()的值为 GaussKruger or UTM
                             Proj.ResetProj(CurrentEllipsoid);
                             break;
 
@@ -269,15 +275,15 @@ public partial class ProjViewModel : ViewModelBase
                 items = buffer.Split([',']);
                 var pnt = new GeoPoint();
 
-                if (items.Length < 3) 
+                if (items.Length < 3)
                     continue; //少于三项数据，不是点的坐标数据，忽略
-                else if(items.Length == 3)
+                else if (items.Length == 3)
                 {
                     pnt.Name = items[0].Trim();
                     pnt.N = double.TryParse(items[1], out var vN) ? vN : 0.0;
                     pnt.E = double.TryParse(items[2], out var vE) ? vE : 0.0;
                 }
-               else if (items.Length == 5)
+                else if (items.Length == 5)
                 {
                     pnt.Name = items[0].Trim();
                     pnt.N = double.TryParse(items[1], out var vN) ? vN : 0.0;
@@ -323,73 +329,89 @@ public partial class ProjViewModel : ViewModelBase
                     pnt.Y = double.TryParse(items[9], out var vY) ? vY : 0.0;
                     pnt.Z = double.TryParse(items[10], out var vZ) ? vZ : 0.0;
                 }
+                else if (items.Length == 13)
+                {
+                    pnt.Name = items[0].Trim();
+                    pnt.N = double.TryParse(items[1], out var vN) ? vN : 0.0;
+                    pnt.E = double.TryParse(items[2], out var vE) ? vE : 0.0;
+                    //默认为 D.MMSS
+                    pnt.DmsB = double.TryParse(items[3], out var vB) ? vB : 0.0;
+                    pnt.DmsL = double.TryParse(items[4], out var vL) ? vL : 0.0;
+                    pnt.H = double.TryParse(items[5], out var vH) ? vH : 0.0;
+                    pnt.M = double.TryParse(items[6], out var vM) ? vM : 0.0;
+                    pnt.Gamma = double.TryParse(items[7], out var vGamma) ? vGamma : 0.0;
+                    pnt.X = double.TryParse(items[8], out var vX) ? vX : 0.0;
+                    pnt.Y = double.TryParse(items[9], out var vY) ? vY : 0.0;
+                    pnt.Z = double.TryParse(items[10], out var vZ) ? vZ : 0.0;
+                    pnt.DmsDB = double.TryParse(items[11], out var vDB) ? vDB : 0.0;
+                    pnt.DH = double.TryParse(items[12], out var vDH) ? vDH : 0.0;
+                }
                 this.PointList.Add(pnt);
             }
         }
     }
 
     [RelayCommand]
-    public void SaveFile()
+    private async Task SaveFileAsync()
     {
         if (FileName == "untitle")
-            SaveAsFile();
+            await SaveAsFileAsync();
         else
-            WriteFile();
+            await WriteFile();
     }
 
     [RelayCommand]
-    public void SaveAsFile()
+    private async Task SaveAsFileAsync()
     {
         SaveFileDialog dlg = new SaveFileDialog();
         dlg.DefaultExt = ".txt";
         dlg.Filter = "高斯投影坐标数据|*.txt|All File(*.*)|*.*";
         if (dlg.ShowDialog() != true) return;
         FileName = dlg.FileName;
-        WriteFile();
+        await  WriteFile();
     }
 
-    private void WriteFile()
+    private async Task WriteFile()
     {
-        using (FileStream fs = new FileStream(FileName, FileMode.Create))
+        StringBuilder sb =new StringBuilder();
+        sb.AppendLine("#数据文件中的 # : , 均应为英文字符");
+        sb.AppendLine("#可以忽略0个空格的行");
+        sb.AppendLine("#可以忽略有多个空格的行");
+        sb.AppendLine("#CS 指定坐标系 Beijing1954 Xian1980 CGCS2000 WGS1984 GRS80 CS00");
+        sb.AppendLine("#CS: Beijing1954");
+        sb.AppendLine("#CS: Xian1980");
+        sb.AppendLine("#CS: WGS1984");
+        sb.AppendLine("#CS: CGCS2000");
+        sb.AppendLine("#CS: GRS80");
+        sb.AppendLine("#CS: CS00, 6378137, 298.257222101");
+        if (CurrentEllipsoid.Id == "CS00")
         {
-            StreamWriter sr = new StreamWriter(fs);
-
-            sr.WriteLine("#数据文件中的 # : , 均应为英文字符");
-            sr.WriteLine("#可以忽略0个空格的行");
-            sr.WriteLine("#可以忽略有多个空格的行");
-            sr.WriteLine("#CS 指定坐标系 Beijing1954 Xian1980 CGCS2000 WGS1984 GRS80 CS00");
-            sr.WriteLine("#CS: Beijing1954");
-            sr.WriteLine("#CS: Xian1980");
-            sr.WriteLine("#CS: WGS1984");
-            sr.WriteLine("#CS: CGCS2000");
-            sr.WriteLine("#CS: GRS80");
-            sr.WriteLine("#CS: CS00, 6378137, 298.257222101");
-            if (CurrentEllipsoid.Id.ToString() == "CS00")
-            {
-                sr.WriteLine($"CS: {CurrentEllipsoid.Id.ToString()}, {CurrentEllipsoid.a}, {CurrentEllipsoid.f}");
-            }
-            else
-            {
-                sr.WriteLine($"CS: {CurrentEllipsoid.Id.ToString()}");
-            }
-            sr.WriteLine("#PROJ 指定投影类型: 高斯投影 -> GaussProj   UTM投影 -> UTMProj");
-            sr.WriteLine($"PROJ: {Proj.Id}");
-
-            sr.WriteLine("#角度数据格式为D.MMSS");
-            sr.WriteLine($"L0: {dmsL0}");
-            sr.WriteLine($"YKM: {FalseEast}");
-            sr.WriteLine($"XKM: {FalseNorth}");
-            sr.WriteLine($"N: {N}");
-            sr.WriteLine("#角度的单位，默认为 D.MMSS");
-            sr.WriteLine("#ANGLE : DEGREE D.MMSSS RADIAN");
-            sr.WriteLine("ANGLE: D.MMSSS");
-
-            sr.WriteLine("#点名, N(m), E(m), B(D.MMSS), L(D.MMSS), H(m), M, γ(D.MMSS), X(m), Y(m), Z(m)");
-            foreach (var pnt in PointList)
-            {
-                sr.WriteLine(pnt);
-            }
-            sr.Close();
+            sb.AppendLine($"CS: {CurrentEllipsoid.Id}, {CurrentEllipsoid.a}, {CurrentEllipsoid.f}");
         }
+        else
+        {
+            sb.AppendLine($"CS: {CurrentEllipsoid.Id}");
+        }
+        sb.AppendLine("#PROJ 指定投影类型: 高斯-克吕格投影 -> GaussKruger   UTM投影 -> UTM");
+        sb.AppendLine($"PROJ: {Proj.Id}");
+
+        sb.AppendLine("#角度数据格式为D.MMSS");
+        sb.AppendLine($"L0: {dmsL0}");
+        sb.AppendLine($"YKM: {FalseEast}");
+        sb.AppendLine($"XKM: {FalseNorth}");
+        sb.AppendLine($"N: {N}");
+        sb.AppendLine("#角度的单位，默认为 D.MMSS");
+        sb.AppendLine("#ANGLE : DEGREE D.MMSSS RADIAN");
+        sb.AppendLine("ANGLE: D.MMSSS");
+
+        sb.AppendLine("#点名, N(m), E(m), B(D.MMSS), L(D.MMSS), H(m), M, γ(D.MMSS), X(m), Y(m), Z(m), ΔB, ΔH");
+        foreach (var pnt in PointList)
+        {
+            sb.AppendLine(pnt.ToString());
+        }
+
+        using FileStream fs = new FileStream(FileName, FileMode.Create);
+        await using var sr = new StreamWriter(fs, Encoding.UTF8);
+        await sr.WriteAsync(sb.ToString());
     }
 }

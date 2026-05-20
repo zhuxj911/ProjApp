@@ -1,34 +1,35 @@
 ﻿using System;
 using System.IO;
+using System.Xml.Linq;
 
 namespace ZXY;
 
-/// <summary>
-/// 参考椭球类型
-/// </summary>
-public enum EllipsoidType
-{
-    CGCS2000 = 0,
-    Xian1980 = 1,
-    Beijing1954 = 2,
-    WGS1984 = 3,
-    GRS80 = 4,
-    CS00 = 5
-}
+///// <summary>
+///// 参考椭球类型
+///// </summary>
+//public enum EllipsoidType
+//{
+//    CGCS2000 = 0,
+//    Xian1980 = 1,
+//    Beijing1954 = 2,
+//    WGS1984 = 3,
+//    GRS80 = 4,
+//    CS00 = 5
+//}
 
 
 /// <summary>
-/// 参考椭球
+/// 参考椭球,主要用于内部计算
 /// </summary>
-public class Ellipsoid
+public class Ellipsoid : IEllipsoid
 {
-    public EllipsoidType Id { get; set; } //约定CS00代表自定义参考椭球
-    public bool IsCustomEllipsoid //用于控制界面，如果为自定义椭球，则可以改变 a f 文本输入框中的值
-    {
-        get => Id == EllipsoidType.CS00;
-    }
-
+    public string Id { get; set; } //约定CS00代表自定义参考椭球 Id用enum，感觉扩展性不够好，改为string更好一些
+    public bool IsCustomEllipsoid => Id == "CS00"; //用于控制界面，如果为自定义椭球，则可以改变 a f 文本输入框中的值
+     
     public string Name { get; set; }
+
+    public override string ToString() => $"{Id}-{Name}";
+
 
     private double _a;
     public double a
@@ -113,5 +114,76 @@ public class Ellipsoid
         this.f = inverse_flattening;
     }
 
-    public override string ToString() => $"{Name}"; 
+   
+
+
+    public  double funM(double sinB2) => a * (1 - e2) / Math.Pow(1 - e2 * sinB2, 1.5);
+
+    public  double funN(double sinB2) => a / Math.Sqrt(1 - e2 * sinB2);
+
+    public  double funR(double sinB2) => Math.Sqrt(funM(sinB2) * funN(sinB2));
+
+    public  double funG2(double cosB2) => eT2 * cosB2;
+
+    public  double funX( double B) => A0 * B
+               + A2 * Math.Sin(2 * B)
+               + A4 * Math.Sin(4 * B)
+               + A6 * Math.Sin(6 * B)
+               + A8 * Math.Sin(8 * B);
+
+    public double funBf(double x)
+    {
+        double B0 = x / A0, Bi = 0;
+
+        int i = 0;
+        while (i < 1000)
+        {
+            i++;
+            Bi = (x - (
+                A2 * Math.Sin(2 * B0)
+                + A4 * Math.Sin(4 * B0)
+                + A6 * Math.Sin(6 * B0)
+                + A8 * Math.Sin(8 * B0))) / A0;
+
+            if (Math.Abs(Bi - B0) < 1e-10) break;
+            else
+                B0 = Bi;
+        }
+
+        return Bi;
+    }
+
+    public (double X, double Y, double Z) BLHtoXYZ(double B, double L, double H)
+    {
+        var sinB = Math.Sin(B);
+        var cosB = Math.Cos(B);
+        var N = funN(sinB * sinB);
+
+        var X = (N + H) * cosB * Math.Cos(L);
+        var Y = (N + H) * cosB * Math.Sin(L);
+        var Z = (N * (1 - e2) + H) * sinB;
+        return (X, Y, Z);
+    }
+
+    public (double B, double L, double H) XYZtoBLH(double X, double Y, double Z)
+    {
+        var L = Math.Atan2(Y, X);
+
+        var pp = Math.Sqrt(X * X + Y * Y);
+        var p = c * e2 / pp;
+        var k = 1 + eT2;
+
+        var t0 = Z / pp;
+        var ti = 0.0;
+        while (true)
+        {
+            ti = Z / pp + p * t0 / Math.Sqrt(k + t0 * t0);
+            if (Math.Abs(t0 - ti) < 1e-10) break;
+            t0 = ti;
+        }
+        var B = Math.Atan(ti);
+        var N = funN(Math.Sin(B) * Math.Sin(B));
+        var H = pp / Math.Cos(B) - N;
+        return (B, L, H);
+    }
 }

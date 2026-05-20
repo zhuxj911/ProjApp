@@ -7,7 +7,7 @@ public interface IProj
 {
     string Id { get; }
     string Name { get; }
-    void ResetProj(Ellipsoid ellipsoid);
+    void ResetProj(IEllipsoid ellipsoid);
 
     /// <summary>
     /// 投影正算，根据经纬度投影计算North-East坐标

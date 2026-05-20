@@ -38,7 +38,7 @@ public class UnitTestGaussProj
         var lon = SurMath.DmsToRadians(116.234992);
         var lon0 = SurMath.DmsToRadians(117);
 
-        var ellipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.CGCS2000];
+        var ellipsoid = EllipsoidType.Ellipsoids["CGCS2000"];
         IProj proj = new GaussProj(ellipsoid);
 
         var (N, E, gamma, m) = proj.Forward(lat, lon, lon0, 500, 39);
@@ -65,7 +65,7 @@ public class UnitTestGaussProj
         var E = 39448455.02271326;
         var lon0 = SurMath.DmsToRadians(117);
 
-        var ellipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.CGCS2000];
+        var ellipsoid = EllipsoidType.Ellipsoids["CGCS2000"];
         IProj proj = new GaussProj(ellipsoid);
 
         var (lat, lon, gamma, m) = proj.Inverse(N, E, lon0, 500, 39, 0);
@@ -81,7 +81,7 @@ public class UnitTestGaussProj
     [Fact]
     public void Test_Beijing1954_GaussProj_Forward()
     {
-        var ellipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.Beijing1954];
+        var ellipsoid = EllipsoidType.Ellipsoids["Beijing1954"];
         IProj proj = new GaussProj(ellipsoid);
 
 
@@ -136,7 +136,7 @@ public class UnitTestGaussProj
         var L = SurMath.DmsToRadians(113.25314880);
         var L0 = SurMath.DmsToRadians(111);
 
-        var ellipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.Beijing1954];
+        var ellipsoid = EllipsoidType.Ellipsoids["Beijing1954"];
         GaussProj proj = new GaussProj(ellipsoid);
        
         var (x, y, _, _) = proj.Forward(B, L, L0, 500, 37);
@@ -153,7 +153,7 @@ public class UnitTestGaussProj
         double x = 2433586.692, y = 250547.403;
 
         //var ellipsoid = new Ellipsoid(6378245, 298.3);
-        var ellipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.Beijing1954];
+        var ellipsoid = EllipsoidType.Ellipsoids["Beijing1954"];
         GaussProj proj = new GaussProj(ellipsoid);
         //UtmProj proj = new UtmProj(ellipsoid);
 
@@ -172,7 +172,7 @@ public class UnitTestGaussProj
         var L0 = SurMath.DmsToRadians(111);
 
         //var ellipsoid = new Ellipsoid(6378245, 298.3);
-        var ellipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.Beijing1954];
+        var ellipsoid = EllipsoidType.Ellipsoids["Beijing1954"];
         GaussProj proj = new GaussProj(ellipsoid);
         //UtmProj proj = new UtmProj(ellipsoid);
 

@@ -7,7 +7,7 @@ public class UnitTestXYZtoBLH
     [Fact]
     public void Test_CGCS2000_BLHtoXYZ()
     {
-        var ellipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.CGCS2000];
+        var ellipsoid = EllipsoidType.Ellipsoids["CGCS2000"];
         {
             //【示例1】北京天安门附近的大地坐标
             var B = SurMath.DegreeToRadians(39.907500);
@@ -51,7 +51,7 @@ public class UnitTestXYZtoBLH
     [Fact]
     public void Test_Beijing1954_BLHtoXYZ()
     {
-        var ellipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.Beijing1954];
+        var ellipsoid = EllipsoidType.Ellipsoids["Beijing1954"];
         {
             var B = SurMath.DmsToRadians(34.222004343);
             var L = SurMath.DmsToRadians(109.133400626);
@@ -75,7 +75,7 @@ public class UnitTestXYZtoBLH
     [Fact]
     public void Test_CGCS2000_XYZtoBLH()
     {
-        var ellipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.CGCS2000];
+        var ellipsoid = EllipsoidType.Ellipsoids["CGCS2000"];
 
         {
             //【示例1】北京天安门附近的大地坐标

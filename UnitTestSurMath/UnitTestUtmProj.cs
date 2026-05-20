@@ -23,7 +23,7 @@ public class UnitTestUtmProj
         var lon = SurMath.DegreeToRadians(116.3972);
         var lon0 = SurMath.DegreeToRadians(117);
 
-        var ellipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.WGS1984];
+        var ellipsoid = EllipsoidType.Ellipsoids["WGS1984"];
         var proj = new UtmProj(ellipsoid);
         var (n, e, gamma, m) = proj.Forward(lat, lon, lon0, 500);
         Assert.Equal(4417664.594844512, n, 1e-3);
@@ -124,7 +124,7 @@ public class UnitTestUtmProj
     [Fact]
     public void Test_WGS84_UtmProj_Inverse()
     {
-        var ellipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.WGS1984];
+        var ellipsoid = EllipsoidType.Ellipsoids["WGS1984"];
         var proj = new UtmProj(ellipsoid);
 
         //测试点1: 北京天安门 (纬度: 39.9075°N, 经度: 116.3972°E)
@@ -245,7 +245,7 @@ public class UnitTestUtmProj
     [Fact]
     public void Test_WGS84_Utm_GetZoneNumber()
     {
-        var ellipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.WGS1984];
+        var ellipsoid = EllipsoidType.Ellipsoids["WGS1984"];
         var proj = new UtmProj(ellipsoid);
 
         var lat = 39.9075; // 39°54'27"
@@ -259,7 +259,7 @@ public class UnitTestUtmProj
     [Fact]
     public void Test_WGS84_Utm_GetCentralMeridian()
     {
-        var ellipsoid = EllipsoidFactory.Ellipsoids[EllipsoidType.WGS1984];
+        var ellipsoid = EllipsoidType.Ellipsoids["WGS1984"];
         var proj = new UtmProj(ellipsoid);
 
         var lon0 = proj.GetCentralMeridian(50);
